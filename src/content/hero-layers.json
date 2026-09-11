@@ -1,0 +1,4 @@
+[
+  {"id":"window","src":"/images/hero/window-mumbai-480.webp","small":"/images/hero/window-mumbai-240.webp","width":480,"height":412,"x":39,"y":0,"size":58,"z":0,"delay":0},
+  {"id":"workstation","src":"/images/hero/workstation-960.webp","small":"/images/hero/workstation-480.webp","width":960,"height":960,"x":2,"y":9,"size":96,"z":1,"delay":120}
+]

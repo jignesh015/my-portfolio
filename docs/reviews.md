@@ -1,5 +1,17 @@
 # Phase reviews
 
+## Subsequent user correction: perspective and lamp
+
+The user rejected the spatial relationships in the separate-sprite composition and noted the missing lamp. This exposed a visual issue not sufficiently weighted by the earlier critic. Rebuilt the entire workstation as one perspective-coherent group while retaining the window and steam separately. Restored lamp, corrected rear-three-quarter pose, angled screens, plant placement and furniture overlaps. Parent visually inspected the actual composite at desktop and 320px; production checks cover 1440/768/390/320px with no overflow, runtime errors or observed CLS. All behavioral cases pass, including five-second delayed window with the workstation already visible. No additional independent rating is claimed.
+
+## Hero portrait enhancement — 2026-09-11
+
+Single independent critic: **7.7/10**, below the user's **8/10** threshold for this enhancement. Inspected desktop, 390px and 320px screenshots, inspiration images, source and QA evidence. Praised transparent integration, original green skull headphones, leafy IDE resemblance, Unity voxel preview and city window. Requested progressive visible loading rather than waiting for every asset, larger distinguishing details on mobile, an inward controller placement/contact shadow, and accurate observed mobile transfer reporting. Suggested stronger lighting as nonblocking polish.
+
+Completed exactly one revision pass: core layers now reveal independently and load before monitors/controller; a dimmed poster fills the loading interval; animation import failure/stall cannot strand decoded layers. Mobile enlarges person/headphones, Unity monitor and controller. Controller moved inward with less vertical compression and a contact shadow. Performance notes now separate candidate totals from observed responsive transfers and include cold throttled completion timing.
+
+Parent recheck after revision: production build and budgets pass; rendered at 1440/768/390/320px with no overflow/CLS/runtime errors. Reduced motion, no-JS, blocked image, failed tween, offscreen deferral and cold throttled reveal passed. A deliberately five-second delayed controller leaves core layers fully visible. No second critic score was produced; **7.7/10 applies to the pre-revision result**, not an invented final rating. Original embedded lighting remains steady and restrained.
+
 Each phase gets one independent critic agent scored from 0–10. A score below 7 triggers one revision pass and a parent-agent recheck; the critic is not run twice. If still below threshold, proceed as the user requested. No phase has required a rerun so far.
 
 ## Phase 1 — 8/10

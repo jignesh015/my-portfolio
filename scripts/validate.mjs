@@ -34,4 +34,14 @@ for (const social of socials) {
   socialKeys.add(social.icon); httpsUrl(social.url);
 }
 await localAsset(site.hero.image); await localAsset(site.hero.imageSmall);
+const layers = JSON.parse(await readFile('src/content/hero-layers.json', 'utf8'));
+if (!site.hero.fallbackAlt?.trim()) throw Error('Missing fallback portrait description');
+const layerIds = new Set();
+for (const layer of layers) {
+  if (!layer.id || layerIds.has(layer.id)) throw Error('Invalid or duplicate hero layer');
+  layerIds.add(layer.id);
+  for (const key of ['width','height','size']) if (!(layer[key] > 0)) throw Error(`Invalid hero ${key}`);
+  for (const key of ['x','y','z','delay']) if (!Number.isFinite(layer[key])) throw Error(`Invalid hero ${key}`);
+  await localAsset(layer.src); await localAsset(layer.small);
+}
 console.log(`Content and assets validated: ${games.length} games, ${socials.length} socials.`);
