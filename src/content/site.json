@@ -1,0 +1,22 @@
+{
+  "name": "Mostly Harmless",
+  "role": "Game developer",
+  "meta": { "title": "Mostly Harmless — Game Developer", "description": "Games, little worlds, and playful experiments. Explore the game development work of Mostly Harmless." },
+  "navigation": [{ "label": "Home", "href": "#home" }, { "label": "My work", "href": "#work" }, { "label": "Say hello", "href": "#contact" }],
+  "skipLink": "Skip to content",
+  "navigationLabel": "Main navigation",
+  "hero": {
+    "eyebrow": "A little corner of the internet",
+    "greeting": "Hey, I’m",
+    "headline": "Mostly Harmless.",
+    "summary": "I make games, build little worlds, and turn curious ideas into playful experiences. From 3D and mobile to VR & AR, there’s always something new brewing at my desk.",
+    "cta": "Explore my work",
+    "note": "A few games. A lot of curiosity.",
+    "image": "/images/workstation-960.webp",
+    "imageSmall": "/images/workstation-640.webp",
+    "imageAlt": "An illustration of Mostly Harmless in glasses and a simple T-shirt at his warmly lit game development desk, with plants, a lamp and steaming coffee.",
+    "caption": "Probably making a game. Definitely making coffee."
+  },
+  "work": { "eyebrow": "Made with curiosity", "title": "Fresh from the desk", "description": "A collection of games, experiments, and worlds I’ve helped bring to life.", "hint": "Hover a card for a little gameplay.", "preview": "Play preview", "stopPreview": "Stop preview", "previewLoading": "Loading preview…", "previewError": "Preview unavailable. You can still visit the game.", "gameLink": "View on itch.io", "indexLabel": "Project" },
+  "footer": { "eyebrow": "There’s always room at the table", "title": "Let’s make\nsomething fun.", "description": "Have a game in mind, or just want to say hello? I’d love to hear from you.", "signoff": "Made with coffee & curiosity.", "copyright": "Mostly Harmless", "backToTop": "Back to top" }
+}

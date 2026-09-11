@@ -1,0 +1,9 @@
+node_modules/
+.pnpm-store/
+dist/
+.prerender/
+.sites-runtime/
+artifacts/
+.env*
+!.env.example
+inspiration/me.webp
