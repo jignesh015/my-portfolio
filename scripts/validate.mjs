@@ -11,8 +11,8 @@ for (const path of requiredSite) {
 }
 const publicRoot = resolve('public') + sep;
 async function localAsset(path) {
-  if (!path.startsWith('/')) throw Error(`Asset must start with /: ${path}`);
-  const absolute = resolve('public', path.slice(1));
+  if (path.startsWith('/')) throw Error(`Asset must be relative to the public folder: ${path}`);
+  const absolute = resolve('public', path);
   if (!absolute.startsWith(publicRoot)) throw Error(`Asset outside public folder: ${path}`);
   await access(absolute);
 }

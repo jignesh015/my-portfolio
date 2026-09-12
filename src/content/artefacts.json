@@ -1,7 +1,7 @@
 [
   {
     "id": "work-ring-left",
-    "src": "/images/artefacts/coffee-ring.webp",
+    "src": "images/artefacts/coffee-ring.webp",
     "section": "work",
     "semantic": "decorative",
     "anchor": "left",
@@ -17,7 +17,7 @@
   },
   {
     "id": "work-ring-right",
-    "src": "/images/artefacts/coffee-ring.webp",
+    "src": "images/artefacts/coffee-ring.webp",
     "section": "work",
     "semantic": "decorative",
     "anchor": "right",
@@ -33,7 +33,7 @@
   },
   {
     "id": "work-ring-bottom",
-    "src": "/images/artefacts/coffee-ring.webp",
+    "src": "images/artefacts/coffee-ring.webp",
     "section": "work",
     "semantic": "decorative",
     "anchor": "left",
@@ -49,7 +49,7 @@
   },
   {
     "id": "work-branch-right",
-    "src": "/images/artefacts/sage-branch.webp",
+    "src": "images/artefacts/sage-branch.webp",
     "section": "work",
     "semantic": "decorative",
     "anchor": "right",
@@ -66,7 +66,7 @@
   },
   {
     "id": "work-branch-left",
-    "src": "/images/artefacts/sage-branch.webp",
+    "src": "images/artefacts/sage-branch.webp",
     "section": "work",
     "semantic": "decorative",
     "anchor": "left",
@@ -83,7 +83,7 @@
   },
   {
     "id": "work-branch-bottom",
-    "src": "/images/artefacts/sage-branch.webp",
+    "src": "images/artefacts/sage-branch.webp",
     "section": "work",
     "semantic": "decorative",
     "anchor": "right",
@@ -100,7 +100,7 @@
   },
   {
     "id": "about-mug",
-    "src": "/images/artefacts/coffee-mug.webp",
+    "src": "images/artefacts/coffee-mug.webp",
     "section": "about",
     "semantic": "decorative",
     "anchor": "left",
@@ -116,7 +116,7 @@
   },
   {
     "id": "about-notebook",
-    "src": "/images/artefacts/notebook.webp",
+    "src": "images/artefacts/notebook.webp",
     "section": "about",
     "semantic": "decorative",
     "anchor": "left",
@@ -132,7 +132,7 @@
   },
   {
     "id": "about-controller",
-    "src": "/images/artefacts/controller.webp",
+    "src": "images/artefacts/controller.webp",
     "section": "about",
     "semantic": "decorative",
     "anchor": "right",
@@ -148,7 +148,7 @@
   },
   {
     "id": "about-keyboard",
-    "src": "/images/artefacts/keyboard.webp",
+    "src": "images/artefacts/keyboard.webp",
     "section": "about",
     "semantic": "decorative",
     "anchor": "right",
@@ -164,7 +164,7 @@
   },
   {
     "id": "about-succulent",
-    "src": "/images/artefacts/succulent.webp",
+    "src": "images/artefacts/succulent.webp",
     "section": "about",
     "semantic": "decorative",
     "anchor": "right",

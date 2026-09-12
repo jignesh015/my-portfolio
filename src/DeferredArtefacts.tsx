@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import artefacts from './content/artefacts.json';
+import { assetUrl } from './assetUrl';
 
 // Shared across both sections: never start competing per-section queues.
 let queue: Promise<void> = Promise.resolve();
@@ -36,7 +37,7 @@ export default function DeferredArtefacts({ section }: { section: 'work' | 'abou
           await new Promise<void>((resolve, reject) => {
             img.onload = () => resolve();
             img.onerror = () => reject(new Error('Decorative image unavailable'));
-            img.src = asset.src;
+            img.src = assetUrl(asset.src);
           });
           await img.decode();
           if (!cancelled) setLoaded(previous => [...previous, asset.id]);
@@ -95,7 +96,7 @@ export default function DeferredArtefacts({ section }: { section: 'work' | 'abou
       data-crop-percent={asset.visiblePercent}
       className={`artefact anchor-${asset.anchor} mobile-${asset.mobile} motion-${asset.motion}${revealed.includes(asset.id) ? ' is-revealed' : ''}`}
       style={{ '--size': `${asset.size}px`, '--top': asset.top, '--rotation': `${asset.rotation}deg`, '--base-offset-x': `${asset.offsetX}px`, '--offset-x': 'var(--base-offset-x)', '--alpha': asset.opacity } as CSSProperties}>
-      <img src={asset.src} alt="" width={asset.width} height={asset.height} decoding="async" draggable={false} />
+      <img src={assetUrl(asset.src)} alt="" width={asset.width} height={asset.height} decoding="async" draggable={false} />
     </div>)}
   </div>;
 }

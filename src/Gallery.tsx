@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import games from './content/games.json';
 import site from './content/site.json';
+import { assetUrl } from './assetUrl';
 
 type Game = { id: string; title: string; description: string; category?: string; credit?: string; url: string; gif: string; poster: string; alt: string };
 function rotation(id: string) { return (Array.from(id).reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7) % 71 - 35) / 10; }
@@ -36,8 +37,8 @@ function GameCard({ game, index }: { game: Game; index: number }) {
     onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { stop(); userStopped.current = false; } }}
     onKeyDown={event => { if (event.key === 'Escape') { userStopped.current = true; stop(); } }}>
     <div className="card-media">
-      <img className="poster" src={game.poster} alt={game.alt} loading="lazy" decoding="async" width="480" height="380" />
-      {playing && !failed && <img className={`gif${loaded ? ' ready' : ''}`} src={game.gif} alt="" aria-hidden="true" width="480" height="380" decoding="async" onLoad={() => setLoaded(true)} onError={() => { setFailed(true); stop(); }} />}
+      <img className="poster" src={assetUrl(game.poster)} alt={game.alt} loading="lazy" decoding="async" width="480" height="380" />
+      {playing && !failed && <img className={`gif${loaded ? ' ready' : ''}`} src={assetUrl(game.gif)} alt="" aria-hidden="true" width="480" height="380" decoding="async" onLoad={() => setLoaded(true)} onError={() => { setFailed(true); stop(); }} />}
       <span className="card-number" aria-label={`${site.work.indexLabel} ${index + 1}`}>{String(index + 1).padStart(2, '0')}</span>
       <button type="button" className="preview-toggle" aria-label={`${playing ? site.work.stopPreview : site.work.preview}: ${game.title}`} aria-pressed={playing} disabled={failed}
         onClick={() => { clearIntent(); if (playing) { userStopped.current = true; stop(); } else { requestedByClick.current = true; setLoaded(false); setPlaying(true); } }}>

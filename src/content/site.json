@@ -32,8 +32,8 @@
     "summary": "I make games, build little worlds, and turn curious ideas into playful experiences. From 3D and mobile to VR & AR, there’s always something new brewing at my desk.",
     "cta": "Explore my work",
     "note": "A few games. A lot of curiosity.",
-    "image": "/images/workstation-flat-640.webp",
-    "imageSmall": "/images/workstation-flat-320.webp",
+    "image": "images/workstation-flat-640.webp",
+    "imageSmall": "images/workstation-flat-320.webp",
     "fallbackAlt": "An illustration of Mostly Harmless wearing glasses at his wooden game-development desk with a monitor, coffee and a plant.",
     "imageAlt": "Mostly Harmless seen from behind at his wooden desk, wearing black headphones with a glowing green skull, working across an IDE and a Unity voxel game on two angled monitors. A warm desk lamp lights his plant, coffee and wireless controller, with an open window overlooking Mumbai suburb apartment buildings and colorful window lights at night.",
     "caption": "Probably making a game. Definitely making coffee."
@@ -65,8 +65,8 @@
       "With 8 years of robust experience in creating 3D, VR/AR, and mobile games, I have honed my skills as both a team player and an independent developer. I have a strong foundation in programming and a passion for creating immersive and engaging experiences for players. My portfolio showcases a variety of projects that demonstrate my versatility and ability to work on different platforms and with different technologies.",
       "In addition to my experience in game development, I have strong communication and teamwork skills, which have allowed me to effectively collaborate with cross-functional teams and contribute to the success of projects. I am always looking for new challenges and opportunities to learn and grow as a developer."
     ],
-    "image": "/images/profile/portrait-560.webp",
-    "imageSmall": "/images/profile/portrait-280.webp",
+    "image": "images/profile/portrait-560.webp",
+    "imageSmall": "images/profile/portrait-280.webp",
     "imageAlt": "Jignesh wearing sunglasses and a white shirt, seated outside a café."
   }
 }
