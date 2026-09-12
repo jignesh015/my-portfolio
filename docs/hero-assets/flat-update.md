@@ -1,0 +1,23 @@
+# Flat hero update — 2026-09-12
+
+Created with the built-in image-generation tool (style-transfer edits of the active workstation and Mumbai window). Source PNGs: `workstation-flat.png` and `window-mumbai-flat.png`. Active WebP filenames remain unchanged in `public/images/hero/`. Fallback/loading images now use `public/images/workstation-flat-640.webp` and `workstation-flat-320.webp`.
+
+The workstation has verified real alpha. The window export still contains a baked checkerboard outside the frame; the existing CSS silhouette clip was adjusted to this export. The whole-scene horizontal/vertical fade masks remain intact. Layout coordinates and layer entrance delays are unchanged. Screens retain their IDE/Unity panel arrangements, leafy code theme and voxel island content as closely as generated editing permits; tiny text is not pixel-identical.
+
+Steam mounts only after both decoded layers report their entrance animation finished. The same completion callback runs for reduced motion, failed tween downloads, and the 1.5-second animation fallback. Progressive layer reveal, idle/viewport lazy loading, hidden-tab/offscreen pausing and reduced-motion handling remain in place.
+
+## Workstation prompt
+
+Use case: style-transfer. Edit target: provided workstation image. Convert this exact illustration to a deliberately simple flat vector-like raster illustration. Keep identical square canvas, object silhouettes, positions, size, perspective, crop and generous transparent empty top area. Keep the same man, pose, glasses, hair, beard, brown shirt, black headphones and bright glowing neon green skull emblem. Keep monitor SCREEN INTERIORS as close to the original as possible: preserve the left leafy dark IDE, syntax-colored code and panel arrangements, and right Unity interface with voxel forest island, water and small orange cabin. These screen interiors are the deliberate exception to simplification; reproduce their original content faithfully. Everywhere else use crisp clean contours, solid flat fills and just 2-3 large light/shadow shapes per object. Simplify wood table to plain warm brown planes with no grain or tiny streaks; plant to broad plain leaf shapes without veins or speckles; chair to smooth plain dark panels without woven mesh. Preserve original warm lamp light direction, lit face and arms, shadows and overall palette as clear flat shapes. No photorealism, painterly brushwork, grain, texture, intricate material shading or gradients except a restrained skull/lamp glow. Keep mug at exactly its original position and shape. No steam or smoke. Keep all objects including lamp, plant, coffee mug, controller, keyboard, monitors and stands, chair and desk legs. True transparent alpha background, not a checkerboard, no wall or floor or window, no new objects. Output a raster PNG, not SVG.
+
+## Window prompt
+
+Use case: style-transfer. Edit the supplied open Mumbai night window into a simple flat vector-like raster illustration that matches a flat warm brown workstation scene. Preserve exact 480:412 aspect ratio, framing, open shutter silhouettes, perspective, positions, moon, navy sky, layered Mumbai apartment buildings, rooftop water tanks, colored lit windows. Simplify wood to 2-3 flat warm brown planes, buildings to flat navy geometric blocks, foliage to broad overlapping dark green shapes with NO tiny leaf texture. Preserve original warm window-frame illumination and cool night shading. Crisp clean shapes, no grain, no woodgrain, no painterly shading, no complex textures. Background outside the frame should be true transparent alpha, no checkerboard. Do not add objects or change composition. Output raster PNG.
+
+Both outputs received a background-extraction follow-up requesting removal of the checkerboard only, unchanged foreground and real RGBA transparency. Only the workstation extraction returned real alpha; the window is clipped in CSS.
+
+## Validation
+
+Production build, type checking, prerendering, content validation and existing size budgets pass. Full layer set: 136,000 bytes; small layer set: 52,004 bytes; loading poster: 13,396 bytes; fallback: 35,266 bytes.
+
+Visual checks at 320, 390, 768 and 1440px passed with no runtime errors, overflow or measured layout shift (`artifacts/hero/flat-final-qa.json`). All eight behavior modes passed (`artifacts/hero/behavior-qa.json`): steam movement/pause/resume, reduced motion, no JavaScript, image failure, tween failure, below-fold lazy loading, slow network and slow window. Added assertions reject steam before either layer settles and require it after successful reveals. Local preview left running at http://127.0.0.1:4174/ for user review.

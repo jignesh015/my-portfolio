@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import site from './content/site.json';
 import layers from './content/hero-layers.json';
 import './hero-portrait.css';
@@ -7,7 +7,7 @@ type Layer = typeof layers[number];
 // Furniture, person and equipment share one projection; the window stays independent.
 const core = ['workstation'];
 
-function PortraitLayer({ layer, visible, onLoad, onError }: { layer: Layer; visible: boolean; onLoad: (id: string) => void; onError: () => void }) {
+function PortraitLayer({ layer, visible, onLoad, onError, onSettled }: { layer: Layer; visible: boolean; onLoad: (id: string) => void; onError: () => void; onSettled: (id: string) => void }) {
   const element = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!visible || !element.current) return;
@@ -16,9 +16,11 @@ function PortraitLayer({ layer, visible, onLoad, onError }: { layer: Layer; visi
     let disposed = false, finished = false, frame = 0, timeout = 0;
     let stop = () => {};
     const finish = () => {
+      if (disposed || finished) return;
       finished = true;
       stop(); cancelAnimationFrame(frame); clearTimeout(timeout);
       node.style.opacity = '1'; node.style.transform = 'none';
+      onSettled(layer.id);
     };
     const changed = () => { if (preference.matches) finish(); };
     preference.addEventListener('change', changed);
@@ -44,7 +46,7 @@ function PortraitLayer({ layer, visible, onLoad, onError }: { layer: Layer; visi
       }).catch(() => { if (!disposed) finish(); });
     }
     return () => { disposed = true; stop(); cancelAnimationFrame(frame); clearTimeout(timeout); preference.removeEventListener('change', changed); };
-  }, [visible, layer.delay]);
+  }, [visible, layer.delay, layer.id, onSettled]);
 
   return <div ref={element} className={`portrait-layer portrait-${layer.id}${visible ? ' is-loaded' : ''}`} style={{ '--layer-x': `${layer.x}%`, '--layer-y': `${layer.y}%`, '--layer-size': `${layer.size}%`, zIndex: layer.z } as CSSProperties}>
     <img src={layer.src} srcSet={`${layer.small} ${layer.width / 2}w, ${layer.src} ${layer.width}w`} sizes={`(max-width: 700px) ${layer.size}vw, (max-width: 1296px) ${Math.round(layer.size * .56)}vw, ${Math.round(layer.size * 7)}px`} width={layer.width} height={layer.height} alt="" aria-hidden="true" loading="lazy" decoding="async" fetchPriority="low" onLoad={event => { void event.currentTarget.decode().then(() => onLoad(layer.id)).catch(onError); }} onError={onError} />
@@ -58,6 +60,9 @@ export default function HeroPortrait() {
   const [tabHidden, setTabHidden] = useState(false);
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState<string[]>([]);
+  const [settled, setSettled] = useState<string[]>([]);
+  const markSettled = useCallback((id: string) => setSettled(previous => previous.includes(id) ? previous : [...previous, id]), []);
+  const portraitSettled = layers.every(layer => settled.includes(layer.id));
   const coreReady = core.every(id => loaded.includes(id));
   const ready = loaded.length === layers.length;
   const markLoaded = (id: string) => setLoaded(previous => previous.includes(id) ? previous : [...previous, id]);
@@ -91,8 +96,8 @@ export default function HeroPortrait() {
   return <figure className="hero-art hero-portrait">
     <div ref={scene} className={`portrait-scene${inView ? ' is-in-view' : ''}${tabHidden ? ' is-tab-hidden' : ''}${ready && !failed ? ' is-ready' : ''}${coreReady && !failed ? ' has-core' : ''}`} role="img" aria-label={coreReady && !failed ? site.hero.imageAlt : site.hero.fallbackAlt}>
       {mounted && !coreReady && !failed && <img className="portrait-loading" src={site.hero.imageSmall} width="640" height="640" alt="" loading="lazy" decoding="async" fetchPriority="low" />}
-      {mounted && !failed && layers.map(layer => <PortraitLayer key={layer.id} layer={layer} visible={loaded.includes(layer.id)} onLoad={markLoaded} onError={() => setFailed(true)} />)}
-      {coreReady && !failed && <svg className="coffee-steam portrait-steam" viewBox="0 0 36 60" aria-hidden="true"><path d="M9 56C-2 42 23 35 10 19S8 8 11 3"/><path d="M21 57C8 43 35 34 22 19S21 8 24 2"/><path d="M30 56C18 44 41 37 30 25"/></svg>}
+      {mounted && !failed && layers.map(layer => <PortraitLayer key={layer.id} layer={layer} visible={loaded.includes(layer.id)} onLoad={markLoaded} onSettled={markSettled} onError={() => setFailed(true)} />)}
+      {portraitSettled && !failed && <svg className="coffee-steam portrait-steam" viewBox="0 0 36 60" aria-hidden="true"><path d="M9 56C-2 42 23 35 10 19S8 8 11 3"/><path d="M21 57C8 43 35 34 22 19S21 8 24 2"/><path d="M30 56C18 44 41 37 30 25"/></svg>}
       {failed && <img className="portrait-fallback" src={site.hero.image} width="960" height="960" alt="" decoding="async" loading="lazy" />}
       <noscript><img className="portrait-fallback" src={site.hero.image} width="960" height="960" alt="" loading="lazy" decoding="async" /></noscript>
     </div>

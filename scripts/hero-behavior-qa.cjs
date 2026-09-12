@@ -8,12 +8,13 @@ const fs = require('node:fs/promises');
     const context=await browser.newContext({viewport:{width:390,height:600},javaScriptEnabled:mode!=='no-js',reducedMotion:mode==='reduced'?'reduce':'no-preference'});
     const page=await context.newPage();
     await page.addInitScript(()=>{
-      window.heroTimings={};
+      window.heroTimings={earlySteam:false};
       document.addEventListener('DOMContentLoaded',()=>{
         const watch=new MutationObserver(()=>{
           const nodes=[...document.querySelectorAll('.portrait-layer')];
+          if(document.querySelector('.portrait-steam') && (nodes.length!==2 || nodes.some(e=>getComputedStyle(e).opacity!=='1'||getComputedStyle(e).transform!=='none'))) window.heroTimings.earlySteam=true;
           if(nodes.length===2 && document.querySelector('.is-ready') && nodes.every(e=>getComputedStyle(e).opacity==='1')) {
-            window.heroTimings.completeReveal=performance.now();watch.disconnect();
+            window.heroTimings.completeReveal ??= performance.now();
           }
         });
         watch.observe(document.documentElement,{subtree:true,attributes:true,childList:true});
@@ -38,8 +39,9 @@ const fs = require('node:fs/promises');
     let progressive=null;
     if(mode==='slow-window') {
       await page.waitForTimeout(1800);
-      progressive=await page.evaluate(()=>({core:[...document.querySelectorAll('.portrait-workstation')].some(e=>getComputedStyle(e).opacity==='1'),complete:!!document.querySelector('.is-ready')}));
+      progressive=await page.evaluate(()=>({core:[...document.querySelectorAll('.portrait-workstation')].some(e=>getComputedStyle(e).opacity==='1'),complete:!!document.querySelector('.is-ready'),steam:!!document.querySelector('.portrait-steam')}));
       if(!progressive.core||progressive.complete) throw Error('Slow window blocked progressive workstation reveal');
+      if(progressive.steam) throw Error('Steam appeared before the window settled');
     }
     if(mode==='no-js') await page.locator('.portrait-fallback').waitFor();
     else if(mode==='image-failure') await page.locator('.portrait-fallback').waitFor();
@@ -65,6 +67,9 @@ const fs = require('node:fs/promises');
     if(['no-js','image-failure'].includes(mode)&&!result.fallback) throw Error('Missing fallback');
     if(result.layers.some(e=>e.opacity!=='1')) throw Error(`${mode}: invisible layer`);
     const timing=await page.evaluate(()=>({...window.heroTimings,paint:performance.getEntriesByType('paint').map(e=>({name:e.name,ms:e.startTime})),images:performance.getEntriesByType('resource').filter(e=>e.name.includes('/images/hero/')||e.name.includes('/images/workstation-')).map(e=>({name:e.name.split('/').pop(),bytes:e.encodedBodySize,start:e.startTime,end:e.responseEnd}))}));
+    if(timing.earlySteam) throw Error(`${mode}: steam appeared before the portrait settled`);
+    if(!['no-js','image-failure','reduced'].includes(mode)&&result.steamHidden) throw Error(`${mode}: steam missing after reveal`);
+    if(errors.length) throw Error(`${mode}: ${errors.join('; ')}`);
     results.push({mode,before,errors,progressive,timing,...result});
     await context.close();
   }
