@@ -8,18 +8,20 @@
 .about-copy>p:not(.eyebrow){font-size:16px;line-height:1.85;color:#c8bca9;margin:0 0 20px}
 .about-copy>p:last-child{margin-bottom:0}
 .artefacts{position:absolute;inset:0;z-index:0;pointer-events:none;user-select:none;overflow:clip}
-.artefact{position:absolute;top:var(--top);width:var(--size);opacity:0;transform:translateX(var(--enter,0px));transition:opacity 900ms ease,transform 1100ms cubic-bezier(.2,.7,.2,1)}
+.artefact{position:absolute;top:var(--top);width:var(--size);opacity:0;transform:translateX(calc(var(--offset-x) + var(--enter,0px)));transition:opacity 900ms ease,transform 1100ms cubic-bezier(.2,.7,.2,1)}
 .artefact img{width:100%;height:auto;transform:rotate(var(--rotation))}
 .anchor-left{left:0}.anchor-right{right:0}
 .motion-left{--enter:-60px}.motion-right{--enter:60px}
-.is-revealed .artefact{opacity:var(--alpha);transform:translateX(0)}
-@starting-style{.is-revealed .artefact{opacity:0;transform:translateX(var(--enter,0px))}}
-/* Edge lanes stay outside both rotated cards and readable copy. */
-.work-section .artefact{max-width:clamp(26px,calc((100vw - 1240px)/2),150px)}
-.work-section .motion-left img,.work-section .motion-right img{transform:none}
-.about-section .artefact{max-width:clamp(28px,calc((100vw - 1080px)/2),170px)}
+.artefact.is-revealed{opacity:var(--alpha);transform:translateX(var(--offset-x))}
+@starting-style{.artefact.is-revealed{opacity:0;transform:translateX(calc(var(--offset-x) + var(--enter,0px)))}}
+/* Decorations intentionally overlap the section a little, instead of being confined to margin-like edge lanes. */
+.work-section .artefact{max-width:clamp(70px,12vw,180px)}
+.about-section .artefact{max-width:clamp(70px,13vw,190px)}
+/* A light CSS-only scatter replaces the former fleck image, avoiding any extra asset request. */
+.work-section::before,.about-section::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 3px 2px at 8% 11%,#ead8b84d 0 70%,transparent 74%),radial-gradient(ellipse 1.5px 2.5px at 17% 31%,#ead8b833 0 70%,transparent 74%),radial-gradient(ellipse 2px 1.5px at 31% 76%,#ead8b838 0 70%,transparent 74%),radial-gradient(ellipse 2.5px 2px at 46% 18%,#ead8b82e 0 70%,transparent 74%),radial-gradient(ellipse 1.5px 1px at 63% 64%,#ead8b840 0 70%,transparent 74%),radial-gradient(ellipse 3px 1.5px at 78% 38%,#ead8b830 0 70%,transparent 74%),radial-gradient(ellipse 1px 2px at 91% 82%,#ead8b842 0 70%,transparent 74%),radial-gradient(ellipse 2px 2.5px at 88% 13%,#ead8b82b 0 70%,transparent 74%),radial-gradient(ellipse 1px 1.5px at 4% 57%,#ead8b832 0 70%,transparent 74%),radial-gradient(ellipse 2.5px 1px at 24% 51%,#ead8b83d 0 70%,transparent 74%),radial-gradient(ellipse 1px 2px at 41% 92%,#ead8b82c 0 70%,transparent 74%),radial-gradient(ellipse 2px 2px at 56% 41%,#ead8b837 0 70%,transparent 74%),radial-gradient(ellipse 1.5px 1px at 72% 88%,#ead8b844 0 70%,transparent 74%),radial-gradient(ellipse 2.5px 1.5px at 96% 58%,#ead8b82e 0 70%,transparent 74%)}
+.about-section::before{background-position:0 0,0 0,11% 8%,0 0,-8% 6%,0 0,4% -5%,0 0}
 @media(max-width:1100px){.about-content{grid-template-columns:180px minmax(0,1fr);gap:38px;max-width:850px}.about-portrait{width:180px;height:180px}.about-section .artefact{max-width:24px}}
 @media(max-width:700px){.about-section{padding:60px 0 65px}.about-content{grid-template-columns:1fr;gap:30px;max-width:480px}.about-portrait{justify-self:center}.about-copy h2{font-size:36px}.about-copy .eyebrow,.about-copy h2{text-align:center}.mobile-hide{display:none}.work-section .mobile-edge{max-width:14px;top:12px}.about-copy>p:not(.eyebrow){line-height:1.8}.site-header nav{gap:12px}}
-@media(prefers-reduced-motion:reduce){.artefact{transition:none;transform:none}}
+@media(prefers-reduced-motion:reduce){.artefact{transition:none;transform:translateX(var(--offset-x))}}
 
 @media(min-width:701px) and (max-width:1100px){.mobile-hide{display:none}.work-section .mobile-edge{max-width:14px;top:12px}}

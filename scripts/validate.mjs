@@ -56,7 +56,7 @@ for (const asset of artefacts) {
   if (!['work','about'].includes(asset.section) || asset.semantic !== 'decorative') throw Error(`Invalid artefact section/status: ${asset.id}`);
   if (!['left','right'].includes(asset.anchor) || !['hide','edge'].includes(asset.mobile) || !['left','right','fade'].includes(asset.motion)) throw Error(`Invalid artefact placement: ${asset.id}`);
   for (const key of ['size','width','height']) if (!(asset[key] > 0)) throw Error(`Invalid artefact ${key}`);
-  if (!/^\d+(\.\d+)?(px|%)$/.test(asset.top) || !Number.isFinite(asset.rotation) || !(asset.opacity > 0 && asset.opacity <= 1)) throw Error('Invalid artefact style');
+  if (!/^\d+(\.\d+)?(px|%)$/.test(asset.top) || !Number.isFinite(asset.rotation) || !Number.isFinite(asset.offsetX) || (asset.visiblePercent !== undefined && (!(asset.visiblePercent >= 30) || !(asset.visiblePercent <= 70))) || !(asset.opacity > 0 && asset.opacity <= 1)) throw Error('Invalid artefact style');
   await localAsset(asset.src);
 }
 console.log(`About and ${artefacts.length} decorative placements validated.`);
