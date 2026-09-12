@@ -5,6 +5,7 @@ import Socials from './Socials';
 import HeroPortrait from './HeroPortrait';
 import About from './About';
 import DeferredArtefacts from './DeferredArtefacts';
+import HangingLights from './HangingLights';
 
 export default function App() {
   const [compact, setCompact] = useState(false);
@@ -34,7 +35,7 @@ export default function App() {
       <section className="work-section" id="work" aria-labelledby="work-title"><DeferredArtefacts section="work" /><div className="shell"><div className="section-heading"><p className="eyebrow">{site.work.eyebrow}</p><h2 id="work-title">{site.work.title}</h2><p>{site.work.description}</p></div><Gallery /></div></section>
       <About />
     </main>
-    <footer id="contact" className="contact"><div className="hanging-lights" aria-hidden="true"><i/><i/><i/><i/></div><div className="shell"><p className="eyebrow">{site.footer.eyebrow}</p><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
+    <footer id="contact" className="contact"><HangingLights /><div className="shell"><p className="eyebrow">{site.footer.eyebrow}</p><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
   </>;
 }
 
