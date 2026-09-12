@@ -2,6 +2,8 @@ import site from './content/site.json';
 import Gallery from './Gallery';
 import Socials from './Socials';
 import HeroPortrait from './HeroPortrait';
+import About from './About';
+import DeferredArtefacts from './DeferredArtefacts';
 
 export function Cup({ className = '' }: { className?: string }) {
   return <svg className={className} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true"><path d="M6 12h17v9a7 7 0 0 1-7 7h-3a7 7 0 0 1-7-7Zm17 2h2a4 4 0 0 1 0 8h-2M11 7l1-4m6 4 1-4M4 28h23"/></svg>;
@@ -25,7 +27,8 @@ export default function App() {
         </div>
         <HeroPortrait />
       </section>
-      <section className="work-section" id="work" aria-labelledby="work-title"><div className="desk-ring" aria-hidden="true"/><div className="shell"><div className="section-heading"><p className="eyebrow">{site.work.eyebrow}</p><h2 id="work-title">{site.work.title}</h2><p>{site.work.description}</p></div><Gallery /></div></section>
+      <section className="work-section" id="work" aria-labelledby="work-title"><DeferredArtefacts section="work" /><div className="shell"><div className="section-heading"><p className="eyebrow">{site.work.eyebrow}</p><h2 id="work-title">{site.work.title}</h2><p>{site.work.description}</p></div><Gallery /></div></section>
+      <About />
     </main>
     <footer id="contact" className="contact"><div className="hanging-lights" aria-hidden="true"><i/><i/><i/><i/></div><div className="shell"><p className="eyebrow">{site.footer.eyebrow}</p><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
   </>;

@@ -69,3 +69,17 @@ The localhost-only `?audit=1` option loads a separate diagnostic chunk and repor
 - Keyboard regression passed: loaded Spell Bind preview stays visible after Tab moves focus to its title; Escape removes the animated image.
 - Hero steam alignment was visually checked. Reduced-motion handling was inspected in source; the live preference was not emulated.
 - Phase 3 critic: 8/10, no blocking defects.
+## About and decorative artefacts — 2026-09-12
+
+Implemented locally after the game gallery. The user's two supplied paragraphs are preserved verbatim in `site.json`; the 8-year experience statement is user-supplied. Circular portrait derivatives come from `inspiration/Profile Pic.jpg`, cropped mechanically and optimized without generative alteration.
+
+- Combined compressed code/HTML: 90,264 bytes (120,000-byte budget), including optional audit and tween chunks.
+- Eight unique transparent decorations: 104,176 bytes total, reused in 13 placements. Budget: 200,000 bytes.
+- Profile 560px derivative: 29,856 bytes (65,000-byte budget); responsive 280px candidate also supplied.
+- Initial prerendered HTML has zero decorative URLs/images/preloads. One shared queue waits for `window.load`, yields to idle time, and waits for each image load/decode before advancing. Asset errors are skipped.
+- At 320/390/768px, nonessential decorations are hidden and skipped in the queue; only one subtle edge branch is fetched. All eight unique assets are fetched at 1440px.
+- Production browser checks at 320/390/768/1440: no overflow, broken new images, runtime errors, or decoration/content intersections (including transformed image bounds). Measured CLS was 0 in each local unthrottled test.
+- Blocking-script test confirms no early decoration requests. Request timings confirm serial delivery after load. Aborted ring requests do not block later About assets. Reduced motion has zero transition duration and no translation. About reveal persists after scrolling away and starts unrevealed on a fresh top-of-page visit. Keyboard About navigation and forward tab to socials passed.
+- Evidence: `artifacts/about/qa.json`, responsive screenshots, `scripts/about-qa.cjs`. Type checking, prerender, content/media validation and existing budgets pass. The local pnpm shim failed to resolve tsc, so the same existing build stages were run directly with Node; no dependency changes.
+
+These are local desktop-browser observations, not cold-network or real-phone benchmarks. Local preview remains at http://127.0.0.1:4174/ . No publication performed for this working preview.

@@ -24,3 +24,10 @@ if (/<img[^>]+src="[^"]+\.gif"/.test(html.toString())) throw Error('A GIF is inc
 const escape = text => text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#x27;');
 if (!html.toString().includes(escape(site.work.title))) throw Error('Prerendered content missing');
 console.log(JSON.stringify({codeGzipBytes:codeGzip,largestHeroBytes:heroBytes,heroLargeTotal,heroSmallTotal,loadingPosterBytes,layerBytes,initialGifImages:0,assets:records},null,2));
+if (html.toString().includes('/images/artefacts/')) throw Error('Decorative URLs leaked into initial HTML');
+if (!html.toString().includes(escape(site.about.title))) throw Error('Prerendered About missing');
+const decorations = JSON.parse(await readFile('src/content/artefacts.json','utf8'));
+const decorationBytes = (await Promise.all([...new Set(decorations.map(a => a.src))].map(async src => (await stat(`public${src}`)).size))).reduce((a,b)=>a+b,0);
+const profileBytes = (await stat(`public${site.about.image}`)).size;
+if (decorationBytes > 200_000 || profileBytes > 65_000) throw Error('About/decorations asset budget exceeded');
+console.log(JSON.stringify({decorationBytes,profileBytes,initialDecorativeImages:0}));

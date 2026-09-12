@@ -1,6 +1,7 @@
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App';
 import './styles.css';
+import './about-artefacts.css';
 
 const root = document.getElementById('root')!;
 if (root.querySelector('main')) hydrateRoot(root, <App />);

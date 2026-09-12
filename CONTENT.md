@@ -21,3 +21,11 @@ The current asset is a minimal vector-style raster illustration, delivered as re
 Hero generated using the built-in image-generation tool from the user's portrait. Final brief: minimal flat vector-style caricature, short hair and glasses, simple T-shirt, facing the monitor while working; coffee brown palette, plants, warm bulbs, no static steam. Original rejected realistic and detailed variants are not shipped. Exact final prompt is recorded in `docs/hero-prompt.md`.
 
 Game GIFs are original public itch.io cover assets, preserved byte-for-byte. The optional `scripts/prepare-media.py` utility downloads `sourceGif` URLs and extracts static WebP first frames; it needs Python and Pillow. Content changes do not require running this utility unless adding or replacing media.
+
+## About and decorations
+
+Edit `site.json` → `about` for the eyebrow, heading, two paragraphs, portrait alt text and responsive image paths. The current experience statement was supplied by the user on 2026-09-12; update it manually as needed.
+
+`artefacts.json` stores stable IDs, image paths, work/about section, decorative semantic status, left/right anchor, size, vertical position, opacity, rotation, motion and narrow-screen visibility. `mobile: "hide"` skips loading at widths up to 1100px; `edge` keeps the small edge treatment. CSS further constrains sizes so artwork stays outside content. Botanical work rotations are held neutral to preserve these clear lanes. After changing placements, run the About browser checks as well as the build.
+
+Production images are in `public/images/artefacts/` and `public/images/profile/`. Exact built-in image-generation prompts and asset provenance are in `docs/about-assets/`. No decoration URLs appear in initial HTML; do not add image preloads or CSS backgrounds for them.

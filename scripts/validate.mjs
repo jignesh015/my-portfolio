@@ -20,7 +20,7 @@ function httpsUrl(value) {
   const url = new URL(value);
   if (url.protocol !== 'https:' || url.username || url.password) throw Error(`Invalid public URL: ${value}`);
 }
-for (const link of site.navigation) if (!link.label?.trim() || !['#home','#work','#contact'].includes(link.href)) throw Error('Invalid navigation entry');
+for (const link of site.navigation) if (!link.label?.trim() || !['#home','#work','#about','#contact'].includes(link.href)) throw Error('Invalid navigation entry');
 for (const game of games) {
   for (const key of ['id', 'title', 'description', 'url', 'gif', 'poster', 'alt']) if (!game[key]?.trim()) throw Error(`Missing game field ${key}`);
   if (ids.has(game.id)) throw Error(`Duplicate game ID: ${game.id}`);
@@ -45,3 +45,18 @@ for (const layer of layers) {
   await localAsset(layer.src); await localAsset(layer.small);
 }
 console.log(`Content and assets validated: ${games.length} games, ${socials.length} socials.`);
+for (const key of ['eyebrow','title','image','imageSmall','imageAlt']) if (!site.about?.[key]?.trim()) throw Error(`Missing about.${key}`);
+if (!Array.isArray(site.about.paragraphs) || site.about.paragraphs.length !== 2 || site.about.paragraphs.some(p => typeof p !== 'string' || !p.trim())) throw Error('About needs two paragraphs');
+await localAsset(site.about.image); await localAsset(site.about.imageSmall);
+const artefacts = JSON.parse(await readFile('src/content/artefacts.json', 'utf8'));
+const artefactIds = new Set();
+for (const asset of artefacts) {
+  if (!asset.id || artefactIds.has(asset.id)) throw Error('Invalid or duplicate artefact ID');
+  artefactIds.add(asset.id);
+  if (!['work','about'].includes(asset.section) || asset.semantic !== 'decorative') throw Error(`Invalid artefact section/status: ${asset.id}`);
+  if (!['left','right'].includes(asset.anchor) || !['hide','edge'].includes(asset.mobile) || !['left','right','fade'].includes(asset.motion)) throw Error(`Invalid artefact placement: ${asset.id}`);
+  for (const key of ['size','width','height']) if (!(asset[key] > 0)) throw Error(`Invalid artefact ${key}`);
+  if (!/^\d+(\.\d+)?(px|%)$/.test(asset.top) || !Number.isFinite(asset.rotation) || !(asset.opacity > 0 && asset.opacity <= 1)) throw Error('Invalid artefact style');
+  await localAsset(asset.src);
+}
+console.log(`About and ${artefacts.length} decorative placements validated.`);

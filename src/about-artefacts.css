@@ -1,0 +1,25 @@
+.work-section,.about-section{position:relative;isolation:isolate;overflow:clip}
+.work-section>.shell,.about-content{position:relative;z-index:1}
+.about-section{border-top:1px solid var(--line);background:#241b15;padding:100px 0 110px}
+.about-content{display:grid;grid-template-columns:240px minmax(0,660px);gap:64px;align-items:center;max-width:1020px}
+.about-portrait{width:240px;height:240px;object-fit:cover;border-radius:50%;border:5px solid #ead8b820;box-shadow:0 16px 40px #100a0740}
+.about-copy .eyebrow{margin-bottom:14px}
+.about-copy h2{font-size:46px;letter-spacing:-1.5px;margin:0 0 26px;line-height:1.15}
+.about-copy>p:not(.eyebrow){font-size:16px;line-height:1.85;color:#c8bca9;margin:0 0 20px}
+.about-copy>p:last-child{margin-bottom:0}
+.artefacts{position:absolute;inset:0;z-index:0;pointer-events:none;user-select:none;overflow:clip}
+.artefact{position:absolute;top:var(--top);width:var(--size);opacity:0;transform:translateX(var(--enter,0px));transition:opacity 900ms ease,transform 1100ms cubic-bezier(.2,.7,.2,1)}
+.artefact img{width:100%;height:auto;transform:rotate(var(--rotation))}
+.anchor-left{left:0}.anchor-right{right:0}
+.motion-left{--enter:-60px}.motion-right{--enter:60px}
+.is-revealed .artefact{opacity:var(--alpha);transform:translateX(0)}
+@starting-style{.is-revealed .artefact{opacity:0;transform:translateX(var(--enter,0px))}}
+/* Edge lanes stay outside both rotated cards and readable copy. */
+.work-section .artefact{max-width:clamp(26px,calc((100vw - 1240px)/2),150px)}
+.work-section .motion-left img,.work-section .motion-right img{transform:none}
+.about-section .artefact{max-width:clamp(28px,calc((100vw - 1080px)/2),170px)}
+@media(max-width:1100px){.about-content{grid-template-columns:180px minmax(0,1fr);gap:38px;max-width:850px}.about-portrait{width:180px;height:180px}.about-section .artefact{max-width:24px}}
+@media(max-width:700px){.about-section{padding:60px 0 65px}.about-content{grid-template-columns:1fr;gap:30px;max-width:480px}.about-portrait{justify-self:center}.about-copy h2{font-size:36px}.about-copy .eyebrow,.about-copy h2{text-align:center}.mobile-hide{display:none}.work-section .mobile-edge{max-width:14px;top:12px}.about-copy>p:not(.eyebrow){line-height:1.8}.site-header nav{gap:12px}}
+@media(prefers-reduced-motion:reduce){.artefact{transition:none;transform:none}}
+
+@media(min-width:701px) and (max-width:1100px){.mobile-hide{display:none}.work-section .mobile-edge{max-width:14px;top:12px}}

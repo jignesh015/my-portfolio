@@ -1,0 +1,53 @@
+{
+  "mode": "built-in imagegen",
+  "assets": [
+    {
+      "name": "coffee-ring",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: A single organic coffee ring stain: imperfect nearly circular thin ring with tiny natural gaps and a few attached droplets. Muted warm amber and walnut. Center interior empty transparent. Top-down flat stain.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-0abd54f8-ab19-4219-9eaa-97621c6007a6.png",
+      "note": "Genuine alpha cutout."
+    },
+    {
+      "name": "sage-branch",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: One graceful tall leafy botanical branch with slender curved stem and 12-18 simple elongated sage leaves, asymmetrical airy silhouette. Vertical composition approximately 160:400, entire branch visible.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-baf942a4-9954-44c5-9c47-908002fa564b.png",
+      "note": "Genuine alpha cutout."
+    },
+    {
+      "name": "cream-flecks",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: Sparse scattering of 18 tiny irregular cream flecks and dots distributed organically over square canvas. Wide empty transparent gaps; no big clusters, no other objects.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-93725166-3781-4a95-bb7e-dea3e5abfeb4.png",
+      "note": "Genuine alpha cutout."
+    },
+    {
+      "name": "coffee-mug",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: One cream ceramic coffee mug viewed directly from above, filled with dark espresso with a simple restrained amber crema curl. Small rounded handle to right. No saucer.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-2e32fc53-2a6b-4623-9c57-d2d736432626.png",
+      "note": "Genuine alpha with soft outer halo."
+    },
+    {
+      "name": "rustic-notebook",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: One closed rustic walnut brown notebook, subtle cream page edges, narrow sage elastic band, simple rounded corners. Top down with slight diagonal rotation. No pen or accessories.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-639035c6-3dda-4ed1-846b-d4d255c87cad.png",
+      "note": "Genuine alpha cutout."
+    },
+    {
+      "name": "game-controller",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: One modern unbranded game controller viewed from above, muted sage body, walnut joysticks and directional pad, small cream buttons. Clean friendly silhouette.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-ebc5fbd3-0b2a-4b84-ba91-cbbbb32aff64.png",
+      "note": "Genuine alpha with soft outer halo."
+    },
+    {
+      "name": "gaming-keyboard",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: One compact unbranded gaming keyboard viewed from above with slight diagonal rotation, walnut case, muted sage and cream keycaps, restrained amber accent keys. All keys blank, no cable.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-f6c23e61-6385-47d9-b943-cf90931f32df.png",
+      "note": "Genuine alpha with soft outer halo."
+    },
+    {
+      "name": "potted-succulent",
+      "prompt": "Use case: stylized-concept. Asset type: transparent decorative raster illustration for portfolio website espresso background. Style: minimal flat vector-like illustration, clean organic shapes, subtle handmade warmth, no gradients, no photorealism. Palette limited to sage #64784D, cream #EAD8B8, walnut #39291F and restrained muted amber. Designed to read well at 100–200 px and low opacity. Genuine transparent alpha background, no colored backdrop, no checkerboard baked in, no floor, no cast shadow. No text, numbers, logos, watermark or extra objects. Generous transparent edge margin. Subject: One small potted succulent with sage rosette leaves and a simple cream ceramic pot, warm walnut soil, illustrated slightly from above so both leaves and pot visible.",
+      "path": "C:/Users/Jignesh/.codex/generated_images/01a094a8-89e6-7ca3-a9c1-2821e03f51e0/exec-97d81377-f9d2-4277-bff7-8feeff356ec9.png",
+      "note": "Genuine alpha cutout."
+    }
+  ]
+}

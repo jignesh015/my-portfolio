@@ -1,8 +1,28 @@
 {
   "name": "Mostly Harmless",
   "role": "Game developer",
-  "meta": { "title": "Mostly Harmless — Game Developer", "description": "Games, little worlds, and playful experiments. Explore the game development work of Mostly Harmless." },
-  "navigation": [{ "label": "Home", "href": "#home" }, { "label": "My work", "href": "#work" }, { "label": "Say hello", "href": "#contact" }],
+  "meta": {
+    "title": "Mostly Harmless — Game Developer",
+    "description": "Games, little worlds, and playful experiments. Explore the game development work of Mostly Harmless."
+  },
+  "navigation": [
+    {
+      "label": "Home",
+      "href": "#home"
+    },
+    {
+      "label": "My work",
+      "href": "#work"
+    },
+    {
+      "label": "About",
+      "href": "#about"
+    },
+    {
+      "label": "Say hello",
+      "href": "#contact"
+    }
+  ],
   "skipLink": "Skip to content",
   "navigationLabel": "Main navigation",
   "hero": {
@@ -18,6 +38,35 @@
     "imageAlt": "Mostly Harmless seen from behind at his wooden desk, wearing black headphones with a glowing green skull, working across an IDE and a Unity voxel game on two angled monitors. A warm desk lamp lights his plant, coffee and wireless controller, with an open window overlooking Mumbai suburb apartment buildings and colorful window lights at night.",
     "caption": "Probably making a game. Definitely making coffee."
   },
-  "work": { "eyebrow": "Made with curiosity", "title": "Fresh from the desk", "description": "A collection of games, experiments, and worlds I’ve helped bring to life.", "hint": "Hover a card for a little gameplay.", "preview": "Play preview", "stopPreview": "Stop preview", "previewLoading": "Loading preview…", "previewError": "Preview unavailable. You can still visit the game.", "gameLink": "View on itch.io", "indexLabel": "Project" },
-  "footer": { "eyebrow": "There’s always room at the table", "title": "Let’s make\nsomething fun.", "description": "Have a game in mind, or just want to say hello? I’d love to hear from you.", "signoff": "Made with coffee & curiosity.", "copyright": "Mostly Harmless", "backToTop": "Back to top" }
+  "work": {
+    "eyebrow": "Made with curiosity",
+    "title": "Fresh from the desk",
+    "description": "A collection of games, experiments, and worlds I’ve helped bring to life.",
+    "hint": "Hover a card for a little gameplay.",
+    "preview": "Play preview",
+    "stopPreview": "Stop preview",
+    "previewLoading": "Loading preview…",
+    "previewError": "Preview unavailable. You can still visit the game.",
+    "gameLink": "View on itch.io",
+    "indexLabel": "Project"
+  },
+  "footer": {
+    "eyebrow": "There’s always room at the table",
+    "title": "Let’s make\nsomething fun.",
+    "description": "Have a game in mind, or just want to say hello? I’d love to hear from you.",
+    "signoff": "Made with coffee & curiosity.",
+    "copyright": "Mostly Harmless",
+    "backToTop": "Back to top"
+  },
+  "about": {
+    "eyebrow": "Behind the games",
+    "title": "Little about me",
+    "paragraphs": [
+      "With 8 years of robust experience in creating 3D, VR/AR, and mobile games, I have honed my skills as both a team player and an independent developer. I have a strong foundation in programming and a passion for creating immersive and engaging experiences for players. My portfolio showcases a variety of projects that demonstrate my versatility and ability to work on different platforms and with different technologies.",
+      "In addition to my experience in game development, I have strong communication and teamwork skills, which have allowed me to effectively collaborate with cross-functional teams and contribute to the success of projects. I am always looking for new challenges and opportunities to learn and grow as a developer."
+    ],
+    "image": "/images/profile/portrait-560.webp",
+    "imageSmall": "/images/profile/portrait-280.webp",
+    "imageAlt": "Jignesh wearing sunglasses and a white shirt, seated outside a café."
+  }
 }
