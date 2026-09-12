@@ -1,4 +1,6 @@
 node_modules/
+.openai/
+.idea/
 .pnpm-store/
 dist/
 .prerender/
