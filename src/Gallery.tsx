@@ -41,7 +41,7 @@ function GameCard({ game, index }: { game: Game; index: number }) {
       <span className="card-number" aria-label={`${site.work.indexLabel} ${index + 1}`}>{String(index + 1).padStart(2, '0')}</span>
       <button type="button" className="preview-toggle" aria-label={`${playing ? site.work.stopPreview : site.work.preview}: ${game.title}`} aria-pressed={playing} disabled={failed}
         onClick={() => { clearIntent(); if (playing) { userStopped.current = true; stop(); } else { requestedByClick.current = true; setLoaded(false); setPlaying(true); } }}>
-        <span aria-hidden="true">{playing ? 'Ⅱ' : '▷'}</span><span>{playing ? site.work.stopPreview : site.work.preview}</span>
+        <span aria-hidden="true">{playing ? <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" focusable="false"><rect width="12" height="12" /></svg> : '▷'}</span><span>{playing ? site.work.stopPreview : site.work.preview}</span>
       </button>
       <span className="preview-status" role="status">{failed ? site.work.previewError : playing && !loaded ? site.work.previewLoading : ''}</span>
     </div>
