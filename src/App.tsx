@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import site from './content/site.json';
 import Gallery from './Gallery';
 import Socials from './Socials';
@@ -5,17 +6,20 @@ import HeroPortrait from './HeroPortrait';
 import About from './About';
 import DeferredArtefacts from './DeferredArtefacts';
 
-export function Cup({ className = '' }: { className?: string }) {
-  return <svg className={className} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true"><path d="M6 12h17v9a7 7 0 0 1-7 7h-3a7 7 0 0 1-7-7Zm17 2h2a4 4 0 0 1 0 8h-2M11 7l1-4m6 4 1-4M4 28h23"/></svg>;
-}
-
 export default function App() {
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const updateHeader = () => setCompact(window.scrollY > 32);
+    updateHeader();
+    window.addEventListener('scroll', updateHeader, { passive: true });
+    return () => window.removeEventListener('scroll', updateHeader);
+  }, []);
   return <>
     <a className="skip-link" href="#main">{site.skipLink}</a>
-    <header className="site-header shell">
-      <a className="brand" href="#home"><Cup /><span>{site.name}<small>{site.role}</small></span></a>
+    <div className="header-space"><header className={`header-bar${compact ? ' is-compact' : ''}`}><div className="site-header shell">
+      <a className="brand" href="#home"><img className="brand-icon" src="/favicon.svg" width="52" height="44" alt="" /><span>{site.name}<small>{site.role}</small></span></a>
       <nav aria-label={site.navigationLabel}>{site.navigation.map(link => <a key={link.href} href={link.href}>{link.label}</a>)}</nav>
-    </header>
+    </div></header></div>
     <main id="main">
       <section className="hero shell" id="home" aria-labelledby="hero-title">
         <div className="hero-copy">
@@ -33,3 +37,4 @@ export default function App() {
     <footer id="contact" className="contact"><div className="hanging-lights" aria-hidden="true"><i/><i/><i/><i/></div><div className="shell"><p className="eyebrow">{site.footer.eyebrow}</p><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
   </>;
 }
+
