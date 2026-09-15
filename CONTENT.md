@@ -4,7 +4,7 @@ All editorial content lives in `src/content/`. Edit these JSON files without cha
 
 - `site.json`: name, bio, navigation, headings, buttons, accessible labels, footer, and search metadata.
 - `games.json`: games in display order. Each record needs a unique `id`, `title`, `description`, `url`, local `gif` and `poster` paths, and image `alt` text. `category` and `credit` are optional. `sourceGif` records the original itch.io asset URL.
-- `socials.json`: labels, URLs, and icon keys (`github`, `linkedin`, or `itch`). Remove a record to remove that social link.
+- `socials.json`: labels, URLs, and icon keys (`github`, `linkedin`, `itch`, or `email`). Use a `mailto:` URL for email links. Remove a record to remove that social link.
 
 Keep JSON valid: double-quoted strings, commas between records, no trailing comma. To add a game, duplicate a record, give it a unique ID, update the content, and add its images under `public/images/games/`. JSON asset paths start with `/images/`, without `public`. The order of records is the display order; card rotations are derived from IDs and stay stable.
 

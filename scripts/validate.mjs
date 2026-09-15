@@ -20,6 +20,14 @@ function httpsUrl(value) {
   const url = new URL(value);
   if (url.protocol !== 'https:' || url.username || url.password) throw Error(`Invalid public URL: ${value}`);
 }
+function socialUrl(value, icon) {
+  const url = new URL(value);
+  if (icon === 'email') {
+    if (url.protocol !== 'mailto:' || !url.pathname || url.username || url.password) throw Error(`Invalid email URL: ${value}`);
+    return;
+  }
+  httpsUrl(value);
+}
 for (const link of site.navigation) if (!link.label?.trim() || !['#home','#work','#about','#contact'].includes(link.href)) throw Error('Invalid navigation entry');
 for (const game of games) {
   for (const key of ['id', 'title', 'description', 'url', 'gif', 'poster', 'alt']) if (!game[key]?.trim()) throw Error(`Missing game field ${key}`);
@@ -30,8 +38,8 @@ for (const game of games) {
 }
 const socialKeys = new Set();
 for (const social of socials) {
-  if (!social.label?.trim() || !['github','linkedin','itch'].includes(social.icon) || socialKeys.has(social.icon)) throw Error('Invalid or duplicate social record');
-  socialKeys.add(social.icon); httpsUrl(social.url);
+  if (!social.label?.trim() || !['github','linkedin','itch','email'].includes(social.icon) || socialKeys.has(social.icon)) throw Error('Invalid or duplicate social record');
+  socialKeys.add(social.icon); socialUrl(social.url, social.icon);
 }
 await localAsset(site.hero.image); await localAsset(site.hero.imageSmall);
 const layers = JSON.parse(await readFile('src/content/hero-layers.json', 'utf8'));
