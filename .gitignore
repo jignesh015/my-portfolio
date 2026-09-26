@@ -9,3 +9,5 @@ artifacts/
 .env*
 !.env.example
 inspiration/me.webp
+.vite-dev.log
+.vite-dev-error.log

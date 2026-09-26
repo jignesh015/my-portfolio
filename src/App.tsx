@@ -69,7 +69,7 @@ export default function App() {
           <p className="eyebrow"><span />{site.hero.eyebrow}</p>
           <h1 id="hero-title"><span>{site.hero.greeting}</span>{site.hero.headline}</h1>
           <p className="hero-summary">{site.hero.summary}</p>
-          <a className="button" href="#work">{site.hero.cta}<span aria-hidden="true">↗</span></a>
+          <a className="button" href="#work">{site.hero.cta}<span aria-hidden="true">↓</span></a>
           <p className="hero-note">{site.hero.note}</p>
         </div>
         <HeroPortrait />
