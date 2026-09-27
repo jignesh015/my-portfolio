@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 import site from './content/site.json';
 import Gallery from './Gallery';
 import Socials from './Socials';
@@ -12,6 +12,18 @@ export default function App() {
   const [compact, setCompact] = useState(false);
   const [activeHref, setActiveHref] = useState('#home');
   const navRef = useRef<HTMLElement>(null);
+  const showWork = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const gallery = document.querySelector<HTMLElement>('#work .console-gallery');
+    if (!gallery) return;
+    event.preventDefault();
+    const bounds = gallery.getBoundingClientRect();
+    const headerHeight = window.matchMedia('(max-width:700px)').matches ? 60 : 68;
+    const inset = headerHeight + Math.max(16, (window.innerHeight - headerHeight - bounds.height) / 2);
+    window.scrollTo({ top: window.scrollY + bounds.top - inset, behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' });
+    if (window.location.hash !== '#work') window.history.pushState(null, '', '#work');
+    setActiveHref('#work');
+  };
 
   useEffect(() => {
     let frame = 0;
@@ -61,7 +73,7 @@ export default function App() {
     <a className="skip-link" href="#main">{site.skipLink}</a>
     <div className="header-space"><header className={`header-bar${compact ? ' is-compact' : ''}`}><div className="site-header shell">
       <a className="brand" href="#home"><img className="brand-icon" src={assetUrl('favicon.svg')} width="52" height="44" alt="" /><span>{site.name}<small>{site.role}</small></span></a>
-      <nav ref={navRef} aria-label={site.navigationLabel}>{site.navigation.map(link => <a key={link.href} href={link.href} aria-current={activeHref === link.href ? 'page' : undefined}>{link.label}</a>)}</nav>
+      <nav ref={navRef} aria-label={site.navigationLabel}>{site.navigation.map(link => <a key={link.href} href={link.href} onClick={link.href === '#work' ? showWork : undefined} aria-current={activeHref === link.href ? 'page' : undefined}>{link.label}</a>)}</nav>
     </div></header></div>
     <main id="main">
       <section className="hero shell" id="home" aria-labelledby="hero-title">
@@ -69,12 +81,12 @@ export default function App() {
           <p className="eyebrow"><span />{site.hero.eyebrow}</p>
           <h1 id="hero-title"><span>{site.hero.greeting}</span>{site.hero.headline}</h1>
           <p className="hero-summary">{site.hero.summary}</p>
-          <a className="button" href="#work">{site.hero.cta}<span aria-hidden="true">↓</span></a>
+          <a className="button" href="#work" onClick={showWork}>{site.hero.cta}<span aria-hidden="true">↓</span></a>
           <p className="hero-note">{site.hero.note}</p>
         </div>
         <HeroPortrait />
       </section>
-      <section className="work-section" id="work" aria-labelledby="work-title"><DeferredArtefacts section="work" /><div className="shell"><div className="section-heading"><p className="eyebrow">{site.work.eyebrow}</p><h2 id="work-title">{site.work.title}</h2><p>{site.work.description}</p></div><Gallery /></div></section>
+      <section className="work-section" id="work" aria-label="My work"><DeferredArtefacts section="work" /><div className="shell"><Gallery /></div></section>
       <About />
     </main>
     <footer id="contact" className="contact"><HangingLights /><div className="shell"><p className="eyebrow">{site.footer.eyebrow}</p><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>

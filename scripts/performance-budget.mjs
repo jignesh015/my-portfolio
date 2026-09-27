@@ -22,7 +22,8 @@ if (heroLargeTotal + loadingPosterBytes > 180_000 || heroSmallTotal + loadingPos
 if (/<img[^>]+fetchPriority="high"/i.test(html.toString())) throw Error('Unexpected high-priority image in initial HTML');
 if (/<img[^>]+src="[^"]+\.gif"/.test(html.toString())) throw Error('A GIF is included in initial HTML');
 const escape = text => text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#x27;');
-if (!html.toString().includes(escape(site.work.title))) throw Error('Prerendered content missing');
+const games = JSON.parse(await readFile('src/content/games.json', 'utf8'));
+if (!html.toString().includes('id="work"') || games.some(game => !html.toString().includes(escape(game.title)))) throw Error('Prerendered project library missing');
 console.log(JSON.stringify({codeGzipBytes:codeGzip,largestHeroBytes:heroBytes,heroLargeTotal,heroSmallTotal,loadingPosterBytes,layerBytes,initialGifImages:0,assets:records},null,2));
 if (html.toString().includes('/images/artefacts/')) throw Error('Decorative URLs leaked into initial HTML');
 if (!html.toString().includes(escape(site.about.title))) throw Error('Prerendered About missing');
