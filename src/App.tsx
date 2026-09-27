@@ -14,12 +14,14 @@ export default function App() {
   const navRef = useRef<HTMLElement>(null);
   const showWork = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const gallery = document.querySelector<HTMLElement>('#work .console-gallery');
+    const mobile = window.matchMedia('(max-width:700px)').matches;
+    const gallery = document.querySelector<HTMLElement>(mobile ? '#work .project-device' : '#work .console-gallery');
     if (!gallery) return;
     event.preventDefault();
     const bounds = gallery.getBoundingClientRect();
-    const headerHeight = window.matchMedia('(max-width:700px)').matches ? 60 : 68;
-    const inset = headerHeight + Math.max(16, (window.innerHeight - headerHeight - bounds.height) / 2);
+    const headerHeight = mobile ? 60 : 68;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const inset = headerHeight + Math.max(16, (viewportHeight - headerHeight - bounds.height) / 2);
     window.scrollTo({ top: window.scrollY + bounds.top - inset, behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' });
     if (window.location.hash !== '#work') window.history.pushState(null, '', '#work');
     setActiveHref('#work');

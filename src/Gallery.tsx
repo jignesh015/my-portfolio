@@ -61,11 +61,36 @@ function GameCard({ game, index, selected, onSelect }: { game: Game; index: numb
 export default function Gallery() {
   const [filter, setFilter] = useState<Filter>('all');
   const [selectedId, setSelectedId] = useState(games[0].id);
+  const [mobileLayout, setMobileLayout] = useState(false);
+  const [detailExpanded, setDetailExpanded] = useState(false);
+  const detailRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLButtonElement>(null);
   const rightRef = useRef<HTMLButtonElement>(null);
   const visibleGames = games.filter(game => filter === 'all' || (filter === 'vr' ? /virtual reality/i : /game jam/i).test(game.category));
   const selected = visibleGames.find(game => game.id === selectedId) ?? visibleGames[0];
+  useEffect(() => {
+    const mobile = window.matchMedia('(max-width:700px)');
+    const update = () => { setMobileLayout(mobile.matches); setDetailExpanded(false); };
+    update();
+    mobile.addEventListener('change', update);
+    return () => mobile.removeEventListener('change', update);
+  }, []);
+  useEffect(() => {
+    if (!detailExpanded) return;
+    const dismissOutside = (event: Event) => {
+      if (event.target instanceof Node && !detailRef.current?.contains(event.target)) setDetailExpanded(false);
+    };
+    const dismissOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setDetailExpanded(false); };
+    document.addEventListener('pointerdown', dismissOutside, true);
+    document.addEventListener('focusin', dismissOutside);
+    document.addEventListener('keydown', dismissOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', dismissOutside, true);
+      document.removeEventListener('focusin', dismissOutside);
+      document.removeEventListener('keydown', dismissOnEscape);
+    };
+  }, [detailExpanded]);
   const navigateRef = useRef<(direction: Direction | null, step?: number) => void>(() => {});
   navigateRef.current = (direction, step = 0) => {
     const grid = gridRef.current;
@@ -275,7 +300,24 @@ export default function Gallery() {
         <div className="library-top"><div><h3>My game library</h3><span>{visibleGames.length} projects</span></div><small>MOSTLY HARMLESS / 01</small></div>
         <div className="library-filters" aria-label="Filter projects">{(['all', 'vr', 'jam'] as const).map((value, i) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => changeFilter(value)}>{['All games', 'VR & AR', 'Game jams'][i]}</button>)}</div>
         <div className="library-grid" ref={gridRef} tabIndex={0} aria-label="Projects, scroll to browse">{visibleGames.map(game => <GameCard key={game.id} game={game} index={games.findIndex(item => item.id === game.id)} selected={game.id === selected.id} onSelect={() => setSelectedId(game.id)} />)}</div>
-        <div className="library-detail"><div><div className="library-detail-heading"><h3>{selected.title}</h3>{selected.category && <span>{selected.category}</span>}</div><p>{selected.description}</p>{selected.credit && <small>{selected.credit}</small>}</div></div>
+        <div className="library-pagination" role="group" aria-label={site.work.indexLabel}>
+          {visibleGames.map((game, index) => <button type="button" key={game.id} aria-label={`${game.title}, ${index + 1} / ${visibleGames.length}`} aria-current={game.id === selected.id ? 'true' : undefined}
+            onClick={() => {
+              const grid = gridRef.current;
+              const card = grid?.querySelector<HTMLElement>(`[data-game-id="${game.id}"]`);
+              if (!grid || !card) return;
+              const bounds = card.getBoundingClientRect();
+              grid.scrollTo({ left: grid.scrollLeft + bounds.left + bounds.width / 2 - grid.getBoundingClientRect().left - grid.clientWidth / 2, behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' });
+            }}><span aria-hidden="true" /></button>)}
+        </div>
+        <div className="library-detail-slot"><div ref={detailRef} className={`library-detail${detailExpanded ? ' is-expanded' : ''}`}
+          role={mobileLayout ? 'region' : undefined} aria-labelledby={mobileLayout ? 'library-detail-title' : undefined}
+          onClick={() => { if (mobileLayout) setDetailExpanded(true); }}>
+          {mobileLayout && <button type="button" className="library-detail-handle" aria-label={detailExpanded ? site.work.collapseDescription : site.work.expandDescription} aria-expanded={detailExpanded}
+            onClick={event => { event.stopPropagation(); setDetailExpanded(value => !value); }}><span aria-hidden="true" /></button>}
+          <div><div className="library-detail-heading"><h3 id="library-detail-title">{selected.title}</h3>{selected.category && <span>{selected.category}</span>}</div><p>{selected.description}</p>{selected.credit && <small>{selected.credit}</small>}</div>
+          {mobileLayout && detailExpanded && <a href={selected.url} target="_blank" rel="noopener noreferrer">{site.work.gameLink}<span aria-hidden="true"> ↗</span></a>}
+        </div></div>
         <div className="console-home-indicator" aria-hidden="true" />
       </section></div>
       <div className="console-grip console-right">

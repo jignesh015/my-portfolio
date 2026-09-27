@@ -1,5 +1,17 @@
 # Mostly Harmless portfolio — project context
 
+2026-09-27: Description handle is now a real keyboard-accessible button that toggles expansion, including closing the expanded panel. Its click does not bubble to the panel's expand handler. Accessible labels live in site.json. TypeScript and diff whitespace checks passed.
+
+2026-09-27: Expanded mobile description panel now shows the existing content-driven View on itch.io button for the selected game, opening in a new tab. The link is removed when collapsed; keyboard activation of the link is independent of panel controls. TypeScript and whitespace checks passed.
+
+2026-09-27: Added a centered 34px rounded handle at the top of the mobile description panel as an expansion cue, visible in both collapsed and expanded states. CSS-only change; panel dimensions and interaction stay the same.
+
+2026-09-27: Mobile description panel reserves a fixed 30% of the phone screen regardless of the selected game's text. Tapping expands it upward to 165% of that reserved height over the cards without resizing the phone or moving the carousel. Outside pointer/focus and Escape collapse it; Enter/Space support keyboard expansion. Expanded content can scroll. TypeScript and diff whitespace checks passed; device visual acceptance remains pending.
+
+2026-09-27: Added mobile pagination dots directly below the game cards. One dot per filtered project, with the selected project highlighted as the carousel scrolls; tapping or keyboard activating a dot scrolls to that card and respects reduced motion. Dots occupy space inside the existing phone dimensions. TypeScript and diff whitespace checks passed; mobile visual acceptance remains pending.
+
+2026-09-27: Mobile My Work phone now keeps a 9:19.5 aspect ratio, sizing its width and height together within the stable viewport minus the compact header and 16px top/bottom clearance. Both My Work navigation and Explore my work center the phone beneath the header; mobile captions are hidden because the phone has an internal tutorial. Preview media and the scrollable description panel fit the reduced phone space. TypeScript and diff whitespace checks passed; browser/device visual acceptance remains pending. Local changes only.
+
 2026-09-12: Replaced the game card Stop Preview Roman numeral glyph with a filled 12px SVG square that inherits the button color and is independent of fonts. TypeScript check passed. Local change only.
 
 Last updated: 2026-09-12 (about section and decorative artefacts implemented locally)

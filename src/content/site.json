@@ -48,6 +48,8 @@
     "previewLoading": "Loading preview…",
     "previewError": "Preview unavailable. You can still visit the game.",
     "gameLink": "View on itch.io",
+    "expandDescription": "Expand game description",
+    "collapseDescription": "Collapse game description",
     "indexLabel": "Project"
   },
   "footer": {
