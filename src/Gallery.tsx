@@ -9,6 +9,7 @@ type Direction = 'up' | 'down' | 'left' | 'right';
 type Filter = 'all' | 'vr' | 'jam';
 const directions: Direction[] = ['up', 'left', 'right', 'down'];
 const arrowDirection: Record<string, Direction> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+const swipeTutorialKey = 'mostly-harmless:swipe-tutorial-seen';
 
 function GameCard({ game, index, selected, onSelect }: { game: Game; index: number; selected: boolean; onSelect: () => void }) {
   const [playing, setPlaying] = useState(false);
@@ -182,6 +183,84 @@ export default function Gallery() {
     if (first) setSelectedId(first.id);
     if (gridRef.current) gridRef.current.scrollTop = 0;
   };
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const mobile = window.matchMedia('(max-width:700px)');
+    let frame = 0;
+    const selectVisibleCard = () => {
+      frame = 0;
+      if (!mobile.matches) return;
+      const center = grid.getBoundingClientRect().left + grid.clientWidth / 2;
+      let nearest: HTMLElement | null = null, distance = Infinity;
+      grid.querySelectorAll<HTMLElement>('[data-game-id]').forEach(card => {
+        const bounds = card.getBoundingClientRect();
+        const offset = Math.abs(bounds.left + bounds.width / 2 - center);
+        if (offset < distance) { nearest = card; distance = offset; }
+      });
+      const id = (nearest as HTMLElement | null)?.dataset.gameId;
+      if (id) setSelectedId(id);
+    };
+    const onScroll = () => { if (mobile.matches && !frame) frame = requestAnimationFrame(selectVisibleCard); };
+    const resetMobile = () => {
+      if (!mobile.matches) return;
+      grid.scrollLeft = 0;
+      selectVisibleCard();
+    };
+    resetMobile();
+    grid.addEventListener('scroll', onScroll, { passive: true });
+    mobile.addEventListener('change', resetMobile);
+    return () => { cancelAnimationFrame(frame); grid.removeEventListener('scroll', onScroll); mobile.removeEventListener('change', resetMobile); };
+  }, [filter]);
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid || !('IntersectionObserver' in window)) return;
+    const mobile = window.matchMedia('(max-width:700px)');
+    let disposed = false, visible = false, shown = false, loading = false;
+    let idle = 0, timer: ReturnType<typeof setTimeout> | undefined;
+    let observer: IntersectionObserver | undefined, dismiss: (() => void) | undefined;
+    const hasSeen = () => {
+      try { return sessionStorage.getItem(swipeTutorialKey) === '1'; } catch { return false; }
+    };
+    const cancelIdle = () => {
+      if (idle) window.cancelIdleCallback(idle);
+      idle = 0; clearTimeout(timer);
+    };
+    const whenIdle = (action: () => void) => {
+      cancelIdle();
+      // No deadline: the tutorial must never compete with page loading or input.
+      if ('requestIdleCallback' in window) idle = window.requestIdleCallback(() => { idle = 0; action(); });
+      else timer = setTimeout(action, 600);
+    };
+    const loadTutorial = () => {
+      if (disposed || shown || loading || !visible || !mobile.matches || hasSeen()) return;
+      loading = true;
+      void import('./swipe-tutorial').then(({ showSwipeTutorial }) => {
+        if (disposed || !visible || !mobile.matches || hasSeen()) return;
+        const cleanup = showSwipeTutorial(grid);
+        if (!cleanup) return;
+        dismiss = cleanup; shown = true;
+        try { sessionStorage.setItem(swipeTutorialKey, '1'); } catch { /* In-memory once-only guard still applies. */ }
+        observer?.disconnect();
+      }).catch(() => { /* An optional hint must never affect the library. */ }).finally(() => { loading = false; });
+    };
+    const observe = () => {
+      observer?.disconnect(); cancelIdle();
+      if (disposed || shown || hasSeen() || !mobile.matches || document.readyState !== 'complete') return;
+      whenIdle(() => {
+        if (disposed || !mobile.matches) return;
+        observer = new IntersectionObserver(([entry]) => {
+          visible = entry.isIntersecting && entry.intersectionRatio >= .6;
+          if (visible) whenIdle(loadTutorial); else cancelIdle();
+        }, { threshold: .6, rootMargin: '-60px 0px 0px 0px' });
+        observer.observe(grid);
+      });
+    };
+    observe();
+    window.addEventListener('load', observe, { once: true });
+    mobile.addEventListener('change', observe);
+    return () => { disposed = true; cancelIdle(); observer?.disconnect(); dismiss?.(); window.removeEventListener('load', observe); mobile.removeEventListener('change', observe); };
+  }, []);
   const speaker = <div className="console-speaker" aria-hidden="true">{Array.from({ length: 6 }, (_, i) => <i key={i} />)}</div>;
   return <div className="console-gallery">
     <div className="project-device">
@@ -192,7 +271,7 @@ export default function Gallery() {
         {speaker}
       </div>
       <div className="console-bezel"><section className="console-screen" aria-label="Project library">
-        <div className="console-phone-top" aria-hidden="true"><span>9:41</span><span>▂▄▆ · ▰</span></div>
+        <div className="console-phone-top" aria-hidden="true" />
         <div className="library-top"><div><h3>My game library</h3><span>{visibleGames.length} projects</span></div><small>MOSTLY HARMLESS / 01</small></div>
         <div className="library-filters" aria-label="Filter projects">{(['all', 'vr', 'jam'] as const).map((value, i) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => changeFilter(value)}>{['All games', 'VR & AR', 'Game jams'][i]}</button>)}</div>
         <div className="library-grid" ref={gridRef} tabIndex={0} aria-label="Projects, scroll to browse">{visibleGames.map(game => <GameCard key={game.id} game={game} index={games.findIndex(item => item.id === game.id)} selected={game.id === selected.id} onSelect={() => setSelectedId(game.id)} />)}</div>
@@ -206,6 +285,6 @@ export default function Gallery() {
         {speaker}
       </div>
     </div>
-    <p className="console-hint"><span>Scroll the screen or use the sticks to explore. </span>Hover a game for a little gameplay.</p>
+    <p className="console-hint"><span className="console-hint-desktop">Scroll the screen or use the sticks to explore. Hover a game for a little gameplay.</span><span className="console-hint-mobile">Swipe to browse. Tap a game to open it, or ▷ for a preview.</span></p>
   </div>;
 }
