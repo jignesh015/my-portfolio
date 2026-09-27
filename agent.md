@@ -1,5 +1,7 @@
 # Mostly Harmless portfolio — project context
 
+2026-09-28: Mobile frame, bezel, and screen now use one shared corner radius, subtracting the 8px frame inset and 4px bezel inset for concentric inner curves and even corner thickness. Diff whitespace check passed; mobile visual confirmation remains pending.
+
 2026-09-27: Description handle is now a real keyboard-accessible button that toggles expansion, including closing the expanded panel. Its click does not bubble to the panel's expand handler. Accessible labels live in site.json. TypeScript and diff whitespace checks passed.
 
 2026-09-27: Expanded mobile description panel now shows the existing content-driven View on itch.io button for the selected game, opening in a new tab. The link is removed when collapsed; keyboard activation of the link is independent of panel controls. TypeScript and whitespace checks passed.
