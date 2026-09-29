@@ -64,11 +64,97 @@ export default function Gallery() {
   const [mobileLayout, setMobileLayout] = useState(false);
   const [detailExpanded, setDetailExpanded] = useState(false);
   const detailRef = useRef<HTMLDivElement>(null);
+  const deviceRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLButtonElement>(null);
   const rightRef = useRef<HTMLButtonElement>(null);
   const visibleGames = games.filter(game => filter === 'all' || (filter === 'vr' ? /virtual reality/i : /game jam/i).test(game.category));
   const selected = visibleGames.find(game => game.id === selectedId) ?? visibleGames[0];
+  useEffect(() => {
+    const device = deviceRef.current;
+    if (!device) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const viewport = window.visualViewport;
+    let disposed = false, visited = false, armed = false, playing = false, frame = 0, animationFrame = 0;
+    let stop = () => {};
+    const reset = () => {
+      stop(); cancelAnimationFrame(animationFrame);
+      device.style.transform = '';
+      device.style.willChange = '';
+      playing = false;
+    };
+    const play = (firstVisit: boolean) => {
+      if (reduced.matches) return;
+      playing = true;
+      void import('@tweenjs/tween.js').then(({ Tween, Easing }) => {
+        if (disposed || reduced.matches) { reset(); return; }
+        const state = { scale: 1 };
+        const update = () => { device.style.transform = `scale(${state.scale})`; };
+        const tweens = firstVisit
+          ? [
+              new Tween(state).to({ scale: 1.045 }, 260).easing(Easing.Cubic.Out),
+              new Tween(state).to({ scale: 1 }, 520).easing(Easing.Back.Out),
+            ]
+          : [
+              new Tween(state).to({ scale: .965 }, 100).easing(Easing.Quadratic.In),
+              new Tween(state).to({ scale: 1.012 }, 100).easing(Easing.Back.Out),
+              new Tween(state).to({ scale: .98 }, 80).easing(Easing.Quadratic.In),
+              new Tween(state).to({ scale: 1 }, 420).easing(Easing.Back.Out),
+            ];
+        tweens.forEach((tween, index) => {
+          tween.onUpdate(update);
+          if (index + 1 < tweens.length) tween.chain(tweens[index + 1]);
+        });
+        tweens[tweens.length - 1].onComplete(() => { reset(); scheduleCheck(); });
+        device.style.willChange = 'transform';
+        tweens[0].start();
+        stop = () => tweens.forEach(tween => tween.stop());
+        const tick = (time: number) => {
+          if (disposed) return;
+          tweens.forEach(tween => tween.update(time));
+          if (tweens.some(tween => tween.isPlaying())) animationFrame = requestAnimationFrame(tick);
+        };
+        animationFrame = requestAnimationFrame(tick);
+      }).catch(reset);
+    };
+    const check = () => {
+      frame = 0;
+      if (disposed || document.hidden) return;
+      const bounds = device.getBoundingClientRect();
+      const visibleTop = Math.max(viewport?.offsetTop ?? 0, document.querySelector('.header-bar')?.getBoundingClientRect().bottom ?? 0);
+      const visibleBottom = (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight);
+      const visibleRight = (viewport?.offsetLeft ?? 0) + (viewport?.width ?? window.innerWidth);
+      const visibleHeight = Math.max(0, Math.min(bounds.bottom, visibleBottom) - Math.max(bounds.top, visibleTop));
+      if (visited && visibleHeight < bounds.height * .45) armed = true;
+      const fullyVisible = bounds.top >= visibleTop && bounds.bottom <= visibleBottom && bounds.left >= (viewport?.offsetLeft ?? 0) && bounds.right <= visibleRight;
+      if (!fullyVisible || playing || (visited && !armed)) return;
+      const firstVisit = !visited;
+      visited = true;
+      armed = false;
+      play(firstVisit);
+    };
+    const scheduleCheck = () => { if (!frame) frame = requestAnimationFrame(check); };
+    const onReducedMotionChange = () => { if (reduced.matches) reset(); };
+    window.addEventListener('scroll', scheduleCheck, { passive: true });
+    window.addEventListener('resize', scheduleCheck);
+    viewport?.addEventListener('resize', scheduleCheck);
+    viewport?.addEventListener('scroll', scheduleCheck);
+    document.addEventListener('visibilitychange', scheduleCheck);
+    reduced.addEventListener('change', onReducedMotionChange);
+    scheduleCheck();
+    return () => {
+      disposed = true;
+      cancelAnimationFrame(frame);
+      reset();
+      window.removeEventListener('scroll', scheduleCheck);
+      window.removeEventListener('resize', scheduleCheck);
+      viewport?.removeEventListener('resize', scheduleCheck);
+      viewport?.removeEventListener('scroll', scheduleCheck);
+      document.removeEventListener('visibilitychange', scheduleCheck);
+      reduced.removeEventListener('change', onReducedMotionChange);
+    };
+  }, []);
   useEffect(() => {
     const mobile = window.matchMedia('(max-width:700px)');
     const update = () => { setMobileLayout(mobile.matches); setDetailExpanded(false); };
@@ -288,7 +374,7 @@ export default function Gallery() {
   }, []);
   const speaker = <div className="console-speaker" aria-hidden="true">{Array.from({ length: 6 }, (_, i) => <i key={i} />)}</div>;
   return <div className="console-gallery">
-    <div className="project-device">
+    <div ref={deviceRef} className="project-device">
       <div className="console-grip">
         <button type="button" className="console-utility" aria-label="Previous project" onClick={() => navigateRef.current(null, -1)}>−</button>
         <button type="button" ref={leftRef} className="console-stick" aria-label="Left joystick: drag up or down to scroll, or use arrow keys" onKeyDown={event => joystickKeys(event, true)}><span className="console-stick-cap" /></button>
