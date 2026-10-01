@@ -4,7 +4,7 @@ const site = JSON.parse(await readFile('src/content/site.json', 'utf8'));
 const games = JSON.parse(await readFile('src/content/games.json', 'utf8'));
 const socials = JSON.parse(await readFile('src/content/socials.json', 'utf8'));
 const ids = new Set();
-const requiredSite = ['name','role','navigationLabel','skipLink','meta.title','meta.description','hero.eyebrow','hero.greeting','hero.headline','hero.summary','hero.cta','hero.image','hero.imageSmall','hero.imageAlt','work.eyebrow','work.title','work.description','work.preview','work.stopPreview','work.previewLoading','work.previewError','work.gameLink','work.indexLabel','footer.title','footer.description','footer.backToTop'];
+const requiredSite = ['name','role','navigationLabel','skipLink','meta.title','meta.description','hero.greeting','hero.headline','hero.summary','hero.cta','hero.image','hero.imageSmall','hero.imageAlt','work.eyebrow','work.title','work.description','work.preview','work.stopPreview','work.previewLoading','work.previewError','work.gameLink','work.indexLabel','footer.title','footer.description','footer.backToTop'];
 for (const path of requiredSite) {
   const value = path.split('.').reduce((part, key) => part?.[key], site);
   if (typeof value !== 'string' || !value.trim()) throw Error(`Missing site text: ${path}`);
