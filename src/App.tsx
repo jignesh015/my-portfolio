@@ -80,7 +80,6 @@ export default function App() {
     <main id="main">
       <section className="hero shell" id="home" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <p className="eyebrow"><span />{site.hero.eyebrow}</p>
           <h1 id="hero-title"><span>{site.hero.greeting}</span>{site.hero.headline}</h1>
           <p className="hero-summary">{site.hero.summary}</p>
           <a className="button" href="#work" onClick={showWork}>{site.hero.cta}<span aria-hidden="true">↓</span></a>
