@@ -30,7 +30,6 @@
     "headline": "Mostly Harmless.",
     "summary": "I make games, build little worlds, and turn curious ideas into playful experiences. From 3D and mobile to VR & AR, there’s always something new brewing at my desk.",
     "cta": "Explore my work",
-    "note": "A few games. A lot of curiosity.",
     "image": "images/workstation-flat-640.webp",
     "imageSmall": "images/workstation-flat-320.webp",
     "fallbackAlt": "An illustration of Mostly Harmless wearing glasses at his wooden game-development desk with a monitor, coffee and a plant.",
@@ -52,7 +51,6 @@
     "indexLabel": "Project"
   },
   "footer": {
-    "eyebrow": "There’s always room at the table",
     "title": "Let’s make\nsomething fun.",
     "description": "Have a game in mind, or just want to say hello? I’d love to hear from you.",
     "signoff": "Made with coffee & curiosity.",

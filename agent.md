@@ -1,3 +1,5 @@
+2026-10-03: Desktop console library places filters in the title row and shows the focused/hovered game description in an animated, click-through popup contained within the screen. When moving to a different game, the popup scale-down/scale-up twitch runs at the same time as its position transition, without rotation. Both console sticks scroll the library vertically; D-pad, ABXY and +/- controls change the highlighted game. Top shoulder buttons cycle library filters in both directions with wraparound. A mouse-only circular cursor appears only inside the console screen and resets on exit. Desktop detail panel and identity label are removed; the mobile touch description panel remains. `pnpm.cmd check` and diff whitespace validation passed. Local Vite is running at http://127.0.0.1:5173/my-portfolio/#work .
+
 # Mostly Harmless portfolio — project context
 
 2026-09-28: Mobile frame, bezel, and screen now use one shared corner radius, subtracting the 8px frame inset and 4px bezel inset for concentric inner curves and even corner thickness. Diff whitespace check passed; mobile visual confirmation remains pending.

@@ -83,14 +83,13 @@ export default function App() {
           <h1 id="hero-title"><span>{site.hero.greeting}</span>{site.hero.headline}</h1>
           <p className="hero-summary">{site.hero.summary}</p>
           <a className="button" href="#work" onClick={showWork}>{site.hero.cta}<span aria-hidden="true">↓</span></a>
-          <p className="hero-note">{site.hero.note}</p>
         </div>
         <HeroPortrait />
       </section>
       <section className="work-section" id="work" aria-label="My work"><DeferredArtefacts section="work" /><div className="shell"><Gallery /></div></section>
       <About />
     </main>
-    <footer id="contact" className="contact"><HangingLights /><div className="shell"><p className="eyebrow">{site.footer.eyebrow}</p><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
+    <footer id="contact" className="contact"><HangingLights /><div className="shell"><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
   </>;
 }
 

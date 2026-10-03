@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import games from './content/games.json';
 import site from './content/site.json';
 import { assetUrl } from './assetUrl';
@@ -11,7 +11,7 @@ const directions: Direction[] = ['up', 'left', 'right', 'down'];
 const arrowDirection: Record<string, Direction> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
 const swipeTutorialKey = 'mostly-harmless:swipe-tutorial-seen';
 
-function GameCard({ game, index, selected, onSelect }: { game: Game; index: number; selected: boolean; onSelect: () => void }) {
+function GameCard({ game, index, selected, onSelect, onHoverStart, onHoverEnd }: { game: Game; index: number; selected: boolean; onSelect: () => void; onHoverStart: () => void; onHoverEnd: () => void }) {
   const [playing, setPlaying] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -36,10 +36,10 @@ function GameCard({ game, index, selected, onSelect }: { game: Game; index: numb
   }, []);
 
   return <article ref={card} data-game-id={game.id} className={`library-card${selected ? ' is-selected' : ''}${playing ? ' is-playing' : ''}`}
-    onPointerEnter={event => { if (event.pointerType === 'mouse') { onSelect(); userStopped.current = false; startAutomatic(); } }}
-    onPointerLeave={event => { if (event.pointerType === 'mouse' && !requestedByClick.current) stop(); }}
-    onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget)) { onSelect(); startAutomatic(); } }}
-    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { stop(); userStopped.current = false; } }}
+    onPointerEnter={event => { if (event.pointerType === 'mouse') { onSelect(); onHoverStart(); userStopped.current = false; startAutomatic(); } }}
+    onPointerLeave={event => { if (event.pointerType === 'mouse') { onHoverEnd(); if (!requestedByClick.current) stop(); } }}
+    onFocus={event => { if (!event.currentTarget.contains(event.relatedTarget)) { onSelect(); onHoverStart(); startAutomatic(); } }}
+    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { onHoverEnd(); stop(); userStopped.current = false; } }}
     onKeyDown={event => { if (event.key === 'Escape') { userStopped.current = true; stop(); } }}>
     <div className="card-media">
       <a className="library-select" href={game.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${game.title} in a new tab`} onClick={onSelect}>
@@ -62,14 +62,60 @@ export default function Gallery() {
   const [filter, setFilter] = useState<Filter>('all');
   const [selectedId, setSelectedId] = useState(games[0].id);
   const [mobileLayout, setMobileLayout] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupTwitchPhase, setPopupTwitchPhase] = useState(0);
+  const [popupLayoutVersion, setPopupLayoutVersion] = useState(0);
+  const [popupStyle, setPopupStyle] = useState<CSSProperties>({ left: 0, top: 0, opacity: 0 });
+  const [cursorVisible, setCursorVisible] = useState(false);
   const [detailExpanded, setDetailExpanded] = useState(false);
   const detailRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLSpanElement>(null);
+  const popupCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastPopupPlacement = useRef<{ left: number; top: number; selectedId: string; visible: boolean } | null>(null);
   const deviceRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLButtonElement>(null);
   const rightRef = useRef<HTMLButtonElement>(null);
   const visibleGames = games.filter(game => filter === 'all' || (filter === 'vr' ? /virtual reality/i : /game jam/i).test(game.category));
   const selected = visibleGames.find(game => game.id === selectedId) ?? visibleGames[0];
+  const showPopup = () => { if (popupCloseTimer.current) clearTimeout(popupCloseTimer.current); popupCloseTimer.current = null; setPopupOpen(true); };
+  const hidePopupSoon = () => { if (popupCloseTimer.current) clearTimeout(popupCloseTimer.current); popupCloseTimer.current = setTimeout(() => setPopupOpen(false), 110); };
+  const moveConsoleCursor = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || !window.matchMedia('(pointer:fine)').matches || !cursorRef.current) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    cursorRef.current.style.left = `${event.clientX - bounds.left}px`;
+    cursorRef.current.style.top = `${event.clientY - bounds.top}px`;
+  };
+  useLayoutEffect(() => {
+    const screen = deviceRef.current?.querySelector<HTMLElement>('.console-screen');
+    const popup = screen?.querySelector<HTMLElement>('.library-description-popup');
+    const card = gridRef.current?.querySelector<HTMLElement>(`[data-game-id="${selected.id}"]`);
+    if (!screen || !popup || !card || mobileLayout) return;
+    const screenRect = screen.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const rightSpace = screenRect.right - cardRect.right - 8;
+    const leftSpace = cardRect.left - screenRect.left - 8;
+    const placeRight = rightSpace >= leftSpace;
+    const available = Math.max(0, (placeRight ? rightSpace : leftSpace) - 12);
+    const width = Math.min(232, available);
+    popup.style.width = `${width}px`;
+    const popupHeight = popup.offsetHeight;
+    const x = placeRight ? cardRect.right - screenRect.left + 8 : cardRect.left - screenRect.left - width - 8;
+    const y = Math.max(8, Math.min(cardRect.top - screenRect.top + cardRect.height / 2 - popupHeight / 2, screenRect.height - popupHeight - 8));
+    const left = Math.max(8, Math.min(x, screenRect.width - width - 8));
+    const previous = lastPopupPlacement.current;
+    if (popupOpen && previous?.visible && previous.selectedId !== selected.id && (Math.abs(previous.left - left) > .5 || Math.abs(previous.top - y) > .5)) setPopupTwitchPhase(phase => phase + 1);
+    lastPopupPlacement.current = { left, top: y, selectedId: selected.id, visible: popupOpen };
+    setPopupStyle({ left, top: y, width, opacity: popupOpen ? 1 : 0, transform: popupOpen ? 'translateY(0) scale(1)' : 'translateY(5px) scale(.98)' });
+  }, [selected.id, selected.description, selected.credit, selected.category, popupOpen, mobileLayout, popupLayoutVersion]);
+  useEffect(() => {
+    if (!popupOpen || mobileLayout) return;
+    const reposition = () => setPopupLayoutVersion(version => version + 1);
+    window.addEventListener('resize', reposition);
+    const grid = gridRef.current;
+    grid?.addEventListener('scroll', reposition, { passive: true });
+    return () => { window.removeEventListener('resize', reposition); grid?.removeEventListener('scroll', reposition); };
+  }, [popupOpen, mobileLayout]);
   useEffect(() => {
     const device = deviceRef.current;
     if (!device) return;
@@ -206,31 +252,25 @@ export default function Gallery() {
     const grid = gridRef.current, left = leftRef.current, right = rightRef.current;
     if (!grid || !left || !right) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let leftDragging = false, lastScroll = grid.scrollTop, neutralTimer: ReturnType<typeof setTimeout> | undefined;
+    let stickDragging = false, lastScroll = grid.scrollTop, neutralTimer: ReturnType<typeof setTimeout> | undefined;
     const cap = left.querySelector<HTMLElement>('.console-stick-cap')!;
     const onScroll = () => {
       const delta = grid.scrollTop - lastScroll;
       lastScroll = grid.scrollTop;
-      if (leftDragging || reduced.matches || !delta) return;
+      if (stickDragging || reduced.matches || !delta) return;
       cap.style.transform = `translateY(${delta > 0 ? 4 : -4}px)`;
       clearTimeout(neutralTimer);
       neutralTimer = setTimeout(() => { cap.style.transform = ''; }, 140);
     };
     grid.addEventListener('scroll', onScroll, { passive: true });
-    function bindJoystick(element: HTMLButtonElement, isLeft: boolean) {
+    function bindJoystick(element: HTMLButtonElement) {
       const stickCap = element.querySelector<HTMLElement>('.console-stick-cap')!;
-      let pointer: number | null = null, originX = 0, originY = 0, x = 0, y = 0, frame = 0, lastTime = 0, lastMove = 0;
-      let heldDirection: Direction | null = null;
+      let pointer: number | null = null, originY = 0, y = 0, frame = 0, lastTime = 0;
       const tick = (time: number) => {
         if (pointer === null) return;
         const dt = lastTime ? Math.min(time - lastTime, 40) : 0;
         lastTime = time;
-        if (isLeft) { if (Math.abs(y) > .12) grid!.scrollTop += y * 430 * dt / 1000; }
-        else {
-          const direction: Direction | null = Math.max(Math.abs(x), Math.abs(y)) < .25 ? null : Math.abs(x) > Math.abs(y) ? (x > 0 ? 'right' : 'left') : (y > 0 ? 'down' : 'up');
-          if (direction && (direction !== heldDirection || time - lastMove >= 260)) { navigateRef.current(direction); lastMove = time; }
-          heldDirection = direction;
-        }
+        if (Math.abs(y) > .12) grid!.scrollTop += y * 430 * dt / 1000;
         frame = requestAnimationFrame(tick);
       };
       const end = () => {
@@ -240,28 +280,27 @@ export default function Gallery() {
         cancelAnimationFrame(frame);
         element.classList.remove('is-dragging');
         stickCap.style.transform = '';
-        if (isLeft) leftDragging = false;
+        stickDragging = false;
         if (element.hasPointerCapture(id)) element.releasePointerCapture(id);
       };
       const down = (event: PointerEvent) => {
         if (pointer !== null || event.button !== 0) return;
         event.preventDefault();
         element.focus({ preventScroll: true });
-        pointer = event.pointerId; originX = event.clientX; originY = event.clientY;
-        x = y = lastTime = lastMove = 0; heldDirection = null;
-        if (isLeft) { leftDragging = true; clearTimeout(neutralTimer); }
+        pointer = event.pointerId; originY = event.clientY;
+        y = lastTime = 0;
+        stickDragging = true; clearTimeout(neutralTimer);
         element.setPointerCapture(pointer);
         element.classList.add('is-dragging');
         frame = requestAnimationFrame(tick);
       };
       const move = (event: PointerEvent) => {
         if (event.pointerId !== pointer) return;
-        const radius = element.clientWidth * .28;
-        let dx = isLeft ? 0 : event.clientX - originX, dy = event.clientY - originY;
-        const distance = Math.hypot(dx, dy);
-        if (distance > radius) { dx *= radius / distance; dy *= radius / distance; }
-        x = dx / radius; y = dy / radius;
-        stickCap.style.transform = `translate(${dx}px,${dy}px)`;
+        const radius = element.clientHeight * .28;
+        let dy = event.clientY - originY;
+        dy = Math.max(-radius, Math.min(radius, dy));
+        y = dy / radius;
+        stickCap.style.transform = `translateY(${dy}px)`;
       };
       const hidden = () => { if (document.hidden) end(); };
       element.addEventListener('pointerdown', down);
@@ -277,22 +316,26 @@ export default function Gallery() {
         document.removeEventListener('visibilitychange', hidden);
       };
     }
-    const cleanLeft = bindJoystick(left, true), cleanRight = bindJoystick(right, false);
+    const cleanLeft = bindJoystick(left), cleanRight = bindJoystick(right);
     return () => { cleanLeft(); cleanRight(); clearTimeout(neutralTimer); grid.removeEventListener('scroll', onScroll); };
   }, []);
 
-  const joystickKeys = (event: React.KeyboardEvent, isLeft: boolean) => {
+  const joystickKeys = (event: React.KeyboardEvent) => {
     const direction = arrowDirection[event.key];
     if (!direction) return;
     event.preventDefault();
-    if (isLeft) { if (gridRef.current && (direction === 'up' || direction === 'down')) gridRef.current.scrollTop += direction === 'up' ? -65 : 65; }
-    else navigateRef.current(direction);
+    if (gridRef.current && (direction === 'up' || direction === 'down')) gridRef.current.scrollTop += direction === 'up' ? -65 : 65;
   };
   const changeFilter = (value: Filter) => {
     setFilter(value);
     const first = games.find(game => value === 'all' || (value === 'vr' ? /virtual reality/i : /game jam/i).test(game.category));
     if (first) setSelectedId(first.id);
     if (gridRef.current) gridRef.current.scrollTop = 0;
+  };
+  const cycleFilter = (step: -1 | 1) => {
+    const filters: Filter[] = ['all', 'vr', 'jam'];
+    const current = filters.indexOf(filter);
+    changeFilter(filters[(current + step + filters.length) % filters.length]);
   };
   useEffect(() => {
     const grid = gridRef.current;
@@ -375,17 +418,26 @@ export default function Gallery() {
   const speaker = <div className="console-speaker" aria-hidden="true">{Array.from({ length: 6 }, (_, i) => <i key={i} />)}</div>;
   return <div className="console-gallery">
     <div ref={deviceRef} className="project-device">
+      <button type="button" className="console-shoulder console-shoulder-left" aria-label="Previous library filter" onClick={() => cycleFilter(-1)}>L</button>
+      <button type="button" className="console-shoulder console-shoulder-right" aria-label="Next library filter" onClick={() => cycleFilter(1)}>R</button>
       <div className="console-grip">
         <button type="button" className="console-utility" aria-label="Previous project" onClick={() => navigateRef.current(null, -1)}>−</button>
-        <button type="button" ref={leftRef} className="console-stick" aria-label="Left joystick: drag up or down to scroll, or use arrow keys" onKeyDown={event => joystickKeys(event, true)}><span className="console-stick-cap" /></button>
+        <button type="button" ref={leftRef} className="console-stick" aria-label="Left joystick: drag up or down to scroll, or use arrow keys" onKeyDown={joystickKeys}><span className="console-stick-cap" /></button>
         <div className="console-dpad" role="group" aria-label="Directional pad">{directions.map((direction, i) => <button type="button" key={direction} data-direction={direction} aria-label={`Highlight project ${direction}`} onClick={() => navigateRef.current(direction)}>{['▴', '◂', '▸', '▾'][i]}</button>)}</div>
         {speaker}
       </div>
-      <div className="console-bezel"><section className="console-screen" aria-label="Project library">
+      <div className="console-bezel"><section className={`console-screen${cursorVisible ? ' has-custom-cursor' : ''}`} aria-label="Project library"
+        onPointerEnter={event => { if (event.pointerType === 'mouse' && window.matchMedia('(pointer:fine)').matches) setCursorVisible(true); moveConsoleCursor(event); }}
+        onPointerMove={moveConsoleCursor}
+        onPointerLeave={event => { if (event.pointerType === 'mouse') { setCursorVisible(false); if (cursorRef.current) { cursorRef.current.style.left = '-100px'; cursorRef.current.style.top = '-100px'; } } }}>
         <div className="console-phone-top" aria-hidden="true" />
-        <div className="library-top"><div><h3>My game library</h3><span>{visibleGames.length} projects</span></div><small>MOSTLY HARMLESS / 01</small></div>
-        <div className="library-filters" aria-label="Filter projects">{(['all', 'vr', 'jam'] as const).map((value, i) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => changeFilter(value)}>{['All games', 'VR & AR', 'Game jams'][i]}</button>)}</div>
-        <div className="library-grid" ref={gridRef} tabIndex={0} aria-label="Projects, scroll to browse">{visibleGames.map(game => <GameCard key={game.id} game={game} index={games.findIndex(item => item.id === game.id)} selected={game.id === selected.id} onSelect={() => setSelectedId(game.id)} />)}</div>
+        <div className="library-top"><div><h3>My game library</h3><span>{visibleGames.length} projects</span></div><div className="library-filters" aria-label="Filter projects">{(['all', 'vr', 'jam'] as const).map((value, i) => <button type="button" key={value} aria-pressed={filter === value} onClick={() => changeFilter(value)}>{['All games', 'VR & AR', 'Game jams'][i]}</button>)}</div></div>
+        <div className="library-grid" ref={gridRef} tabIndex={0} aria-label="Projects, scroll to browse">{visibleGames.map(game => <GameCard key={game.id} game={game} index={games.findIndex(item => item.id === game.id)} selected={game.id === selected.id} onSelect={() => setSelectedId(game.id)} onHoverStart={showPopup} onHoverEnd={hidePopupSoon} />)}</div>
+        {!mobileLayout && <div className={`library-description-popup${popupOpen ? ' is-visible' : ''}${popupTwitchPhase ? ` twitch-${popupTwitchPhase % 2 ? 'a' : 'b'}` : ''}`} style={popupStyle} aria-hidden="true">
+          <div className="library-description-popup-heading"><strong>{selected.title}</strong>{selected.category && <span>{selected.category}</span>}</div>
+          <p>{selected.description}</p>{selected.credit && <small>{selected.credit}</small>}
+        </div>}
+        <span ref={cursorRef} className="console-custom-cursor" aria-hidden="true"><i /></span>
         <div className="library-pagination" role="group" aria-label={site.work.indexLabel}>
           {visibleGames.map((game, index) => <button type="button" key={game.id} aria-label={`${game.title}, ${index + 1} / ${visibleGames.length}`} aria-current={game.id === selected.id ? 'true' : undefined}
             onClick={() => {
@@ -396,20 +448,20 @@ export default function Gallery() {
               grid.scrollTo({ left: grid.scrollLeft + bounds.left + bounds.width / 2 - grid.getBoundingClientRect().left - grid.clientWidth / 2, behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' });
             }}><span aria-hidden="true" /></button>)}
         </div>
-        <div className="library-detail-slot"><div ref={detailRef} className={`library-detail${detailExpanded ? ' is-expanded' : ''}`}
+        {mobileLayout && <div className="library-detail-slot"><div ref={detailRef} className={`library-detail${detailExpanded ? ' is-expanded' : ''}`}
           role={mobileLayout ? 'region' : undefined} aria-labelledby={mobileLayout ? 'library-detail-title' : undefined}
           onClick={() => { if (mobileLayout) setDetailExpanded(true); }}>
           {mobileLayout && <button type="button" className="library-detail-handle" aria-label={detailExpanded ? site.work.collapseDescription : site.work.expandDescription} aria-expanded={detailExpanded}
             onClick={event => { event.stopPropagation(); setDetailExpanded(value => !value); }}><span aria-hidden="true" /></button>}
           <div><div className="library-detail-heading"><h3 id="library-detail-title">{selected.title}</h3>{selected.category && <span>{selected.category}</span>}</div><p>{selected.description}</p>{selected.credit && <small>{selected.credit}</small>}</div>
           {mobileLayout && detailExpanded && <a href={selected.url} target="_blank" rel="noopener noreferrer">{site.work.gameLink}<span aria-hidden="true"> ↗</span></a>}
-        </div></div>
+        </div></div>}
         <div className="console-home-indicator" aria-hidden="true" />
       </section></div>
       <div className="console-grip console-right">
         <button type="button" className="console-utility" aria-label="Next project" onClick={() => navigateRef.current(null, 1)}>+</button>
         <div className="console-abxy" role="group" aria-label="Project navigation">{directions.map((direction, i) => <button type="button" key={direction} aria-label={`${['Y', 'X', 'B', 'A'][i]}: highlight project ${direction}`} onClick={() => navigateRef.current(direction)}>{['Y', 'X', 'B', 'A'][i]}</button>)}</div>
-        <button type="button" ref={rightRef} className="console-stick" aria-label="Right joystick: drag to highlight a project, or use arrow keys" onKeyDown={event => joystickKeys(event, false)}><span className="console-stick-cap" /></button>
+        <button type="button" ref={rightRef} className="console-stick" aria-label="Right joystick: drag up or down to scroll, or use arrow keys" onKeyDown={joystickKeys}><span className="console-stick-cap" /></button>
         {speaker}
       </div>
     </div>
