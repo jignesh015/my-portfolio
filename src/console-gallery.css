@@ -22,6 +22,11 @@
 
 /* Leave room for the fixed header when navigating to #work. */
 .work-section{padding-block:24px}
+/* One continuous tabletop behind both independently navigable sections. */
+.tabletop{position:relative;isolation:isolate;overflow:clip;border-top:1px solid var(--line);background:linear-gradient(180deg,#2b2017,#271d16)}
+.tabletop::after{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:url('./wood-grain.svg') repeat;background-size:960px 480px;opacity:.45;mix-blend-mode:soft-light;mask-image:linear-gradient(180deg,transparent,#000 6%,#000 94%,transparent)}
+.tabletop>.work-section,.tabletop>.about-section{z-index:1;border-top:0;background:transparent;overflow:visible}
+.tabletop .artefacts{overflow:visible}
 .console-gallery{margin-top:0}
 .project-device{height:min(560px,calc(100svh - 180px))}
 .console-hint{margin-top:20px}

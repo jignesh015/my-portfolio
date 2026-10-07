@@ -32,10 +32,13 @@ export default function App() {
     const updateNavigation = () => {
       frame = 0;
       setCompact(window.scrollY > 32);
+      const atPageBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
       const currentPosition = window.scrollY + 130;
-      const activeSection = [...site.navigation].reverse().find(({ href }) => {
+      const activeSection = atPageBottom
+        ? site.navigation.find(({ href }) => href === '#contact')
+        : [...site.navigation].reverse().find(({ href }) => {
         const section = document.querySelector<HTMLElement>(href);
-        return section ? section.offsetTop <= currentPosition : false;
+        return section ? section.getBoundingClientRect().top + window.scrollY <= currentPosition : false;
       });
       if (activeSection) setActiveHref(activeSection.href);
     };
@@ -86,8 +89,10 @@ export default function App() {
         </div>
         <HeroPortrait />
       </section>
-      <section className="work-section" id="work" aria-label="My work"><DeferredArtefacts section="work" /><div className="shell"><Gallery /></div></section>
-      <About />
+      <div className="tabletop">
+        <section className="work-section" id="work" aria-label="My work"><DeferredArtefacts section="work" /><div className="shell"><Gallery /></div></section>
+        <About />
+      </div>
     </main>
     <footer id="contact" className="contact"><HangingLights /><div className="shell"><h2>{site.footer.title}</h2><p className="contact-copy">{site.footer.description}</p><Socials /><div className="footer-bottom"><p>© {new Date().getFullYear()} {site.footer.copyright}</p><p className="signoff">{site.footer.signoff}</p><a href="#home" aria-label={site.footer.backToTop}>↑</a></div></div></footer>
   </>;
