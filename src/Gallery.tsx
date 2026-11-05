@@ -2,6 +2,7 @@ import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from
 import games from './content/games.json';
 import site from './content/site.json';
 import { assetUrl } from './assetUrl';
+import { trackedUrl, linkProps } from './trackedLink';
 import './console-gallery.css';
 
 type Game = { id: string; title: string; description: string; category?: string; credit?: string; url: string; gif: string; poster: string; alt: string };
@@ -42,7 +43,7 @@ function GameCard({ game, index, selected, onSelect, onHoverStart, onHoverEnd }:
     onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { onHoverEnd(); stop(); userStopped.current = false; } }}
     onKeyDown={event => { if (event.key === 'Escape') { userStopped.current = true; stop(); } }}>
     <div className="card-media">
-      <a className="library-select" href={game.url} target="_blank" rel="noopener noreferrer" aria-label={`Open ${game.title} in a new tab`} onClick={onSelect}>
+      <a className="library-select" href={trackedUrl(game.url)} {...linkProps} aria-label={`Open ${game.title} in a new tab`} onClick={onSelect}>
       <img className="poster" src={assetUrl(game.poster)} alt={game.alt} loading="lazy" decoding="async" width="480" height="380" />
       {playing && !failed && <img className={`gif${loaded ? ' ready' : ''}`} src={assetUrl(game.gif)} alt="" aria-hidden="true" width="480" height="380" decoding="async" onLoad={() => setLoaded(true)} onError={() => { setFailed(true); stop(); }} />}
       </a>
@@ -53,7 +54,7 @@ function GameCard({ game, index, selected, onSelect, onHoverStart, onHoverEnd }:
       </button>
       {failed && <span className="preview-status" role="status">{site.work.previewError}</span>}
     </div>
-    <h3 className="library-game-title"><a href={game.url} target="_blank" rel="noopener noreferrer">{game.title}<span aria-hidden="true"> ↗</span></a></h3>
+    <h3 className="library-game-title"><a href={trackedUrl(game.url)} {...linkProps}>{game.title}<span aria-hidden="true"> ↗</span></a></h3>
     <p className="library-sr-only">{game.description}{game.credit ? ` — ${game.credit}` : ''}</p>
   </article>;
 }
@@ -454,7 +455,7 @@ export default function Gallery() {
           {mobileLayout && <button type="button" className="library-detail-handle" aria-label={detailExpanded ? site.work.collapseDescription : site.work.expandDescription} aria-expanded={detailExpanded}
             onClick={event => { event.stopPropagation(); setDetailExpanded(value => !value); }}><span aria-hidden="true" /></button>}
           <div><div className="library-detail-heading"><h3 id="library-detail-title">{selected.title}</h3>{selected.category && <span>{selected.category}</span>}</div><p>{selected.description}</p>{selected.credit && <small>{selected.credit}</small>}</div>
-          {mobileLayout && detailExpanded && <a href={selected.url} target="_blank" rel="noopener noreferrer">{site.work.gameLink}<span aria-hidden="true"> ↗</span></a>}
+          {mobileLayout && detailExpanded && <a href={trackedUrl(selected.url)} {...linkProps}>{site.work.gameLink}<span aria-hidden="true"> ↗</span></a>}
         </div></div>}
         <div className="console-home-indicator" aria-hidden="true" />
       </section></div>

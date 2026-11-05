@@ -1,4 +1,5 @@
 import socials from './content/socials.json';
+import { trackedUrl, linkProps } from './trackedLink';
 
 function SocialIcon({ icon }: { icon: string }) {
   if (icon === 'linkedin') return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3.5 9h3v12h-3ZM9 9h3v1.6c.7-1.2 1.7-1.9 3.3-1.9 3.4 0 4.2 2.2 4.2 5.3v7h-3v-6.2c0-1.5 0-3.4-2.1-3.4s-2.4 1.6-2.4 3.3V21H9Z"/></svg>;
@@ -8,5 +9,5 @@ function SocialIcon({ icon }: { icon: string }) {
 }
 
 export default function Socials() {
-  return <div className="socials">{socials.map(social => <a href={social.url} key={social.icon} target="_blank" rel="noopener noreferrer" aria-label={social.label}><span className="social-icon"><SocialIcon icon={social.icon} /></span><span>{social.label}</span></a>)}</div>;
+  return <div className="socials">{socials.map(social => <a href={trackedUrl(social.url)} key={social.icon} {...linkProps} aria-label={social.label}><span className="social-icon"><SocialIcon icon={social.icon} /></span><span>{social.label}</span></a>)}</div>;
 }
